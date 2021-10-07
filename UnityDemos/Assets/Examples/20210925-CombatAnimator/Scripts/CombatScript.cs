@@ -21,6 +21,7 @@ namespace example.y20210925
         [Header("Combat Settings")]
         [SerializeField] private float attackCooldown;
 
+        // 这些状态如何用状态模式重构、优化？
         [Header("States")]
         public bool isAttackingEnemy = false;     // 是否正在攻击敌人
         public bool isCountering = false;         // 是否正在反击
@@ -53,7 +54,7 @@ namespace example.y20210925
             animator = GetComponent<Animator>();
             enemyDetection = GetComponentInChildren<EnemyDetection>();
             movementInput = GetComponent<MovementInput>();
-            impulseSource = GetComponentInChildren<CinemachineImpulseSource>();
+            impulseSource = GetComponentInChildren<CinemachineImpulseSource>();    // CinemachineImpulseSource 目前还没有弄明白
         }
 
         // This function gets called whenever the player inputs the punch action
@@ -122,33 +123,49 @@ namespace example.y20210925
             impulseSource.m_ImpulseDefinition.m_AmplitudeGain = Mathf.Max(3, 1 * distance);
         }
 
+
+        // 有的时候动作看起来没有力量，是因为动画播放的速度太慢了
+        // 可以在Animator 中设置Speed 变大来调整播放速度，提升力量感和打击感
         void AttackType(string attackTrigger, float cooldown, EnemyScript target, float movementDuration)
         {
             animator.SetTrigger(attackTrigger);
 
             if (attackCoroutine != null)
+            {
                 StopCoroutine(attackCoroutine);
+            }
+
             attackCoroutine = StartCoroutine(AttackCoroutine(isLastHit() ? 1.5f : cooldown));
 
             // check if last enemy
             if (isLastHit())
+            {
                 StartCoroutine(FinalBlowCoroutine());
+            }
 
             if (target == null)
                 return;
 
+            // 敌人停止运动，玩家向着敌人的方向移动
             target.StopMoving();
             MoveTowardsTarget(target, movementDuration);
 
             IEnumerator AttackCoroutine(float duration)
             {
                 movementInput.acceleration = 0;
-                isAttackingEnemy = true;
-                movementInput.enabled = false;
+
+                // 攻击前的设置
+                isAttackingEnemy = true;         // 玩家正在向敌人进行攻击
+                movementInput.enabled = false;   // 输入系统暂时置为不可用
+
+                // 攻击持续时间
                 yield return new WaitForSeconds(duration);
+
+                // 攻击后恢复之前的设置
                 isAttackingEnemy = false;
                 yield return new WaitForSeconds(0.2f);
                 movementInput.enabled = true;
+
                 LerpCharacterAcceleration();
             }
 
@@ -156,28 +173,40 @@ namespace example.y20210925
             // 用于实现时间减速，增加击打最后一个敌人的视觉效果
             IEnumerator FinalBlowCoroutine()
             {
+                // 放慢0.5倍
                 Time.timeScale = 0.5f;
+
                 lastHitCamera.SetActive(true);
                 lastHitFocusObject.position = lockedTarget.transform.position;
                 yield return new WaitForSecondsRealtime(2);
                 lastHitCamera.SetActive(false);
+
+                // 恢复时间速度
                 Time.timeScale = 1f;
             }
         }
 
         void MoveTowardsTarget(EnemyScript target, float duration)
         {
+            // OnTrajectory？
             OnTrajectory.Invoke(target);
+
+            // 使用DOTween 实现
             transform.DOLookAt(target.transform.position, 0.2f);
             transform.DOMove(TargetOffset(target.transform), duration);
         }
 
+
+        // 反击检查
         void CounterCheck()
         {
             // initial check
             if (isCountering || isAttackingEnemy || !enemyManager.AnEnemyIsPreparingAttack())
+            {
                 return;
+            }
 
+            // 选择一个最近的敌人
             lockedTarget = ClosestCounterEnemy();
             OnCounterAttack.Invoke(lockedTarget);
 
@@ -193,16 +222,19 @@ namespace example.y20210925
             transform.DOMove(transform.position + lockedTarget.transform.forward, duration);
 
             if (counterCoroutine != null)
+            {
                 StopCoroutine(counterCoroutine);
+            }
             counterCoroutine = StartCoroutine(CounterCoroutine(duration));
 
             IEnumerator CounterCoroutine(float duration)
             {
-                isCountering = true;
+                isCountering = true;   // 正在反击
                 movementInput.enabled = false;
                 yield return new WaitForSeconds(duration);
                 Attack(lockedTarget, TargetDistance(lockedTarget));
-                isCountering = false;
+
+                isCountering = false;  // 反击结束
             }
         }
 
@@ -220,12 +252,17 @@ namespace example.y20210925
 
         public void HitEvent()
         {
+            // 当没有目标敌人，或者敌人的数量为0，直接退出
             if (lockedTarget == null || enemyManager.AliveEnemyCount() == 0)
+            {
                 return;
+            }
 
             OnHit.Invoke(lockedTarget);
 
-            // Polish
+            // Polish。在指定位置播放攻击特效
+            // 注意取消勾选ParticleSystem 上的Looping 参数，否则这个特效会一直循环播放
+            // 而我们希望的是在发起攻击的时候进行播放！
             punchParticle.PlayParticleAtPosition(punchPosition.position);
         }
 
@@ -234,7 +271,9 @@ namespace example.y20210925
             animator.SetTrigger("Hit");
 
             if (damageCoroutine != null)
+            {
                 StopCoroutine(damageCoroutine);
+            }
             damageCoroutine = StartCoroutine(DamageCoroutine());
 
             IEnumerator DamageCoroutine()
@@ -277,7 +316,9 @@ namespace example.y20210925
         bool isLastHit()
         {
             if (lockedTarget == null)
+            {
                 return false;
+            }
 
             return enemyManager.AliveEnemyCount() == 1 && lockedTarget.health <= 1;
         }

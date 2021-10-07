@@ -27,6 +27,7 @@ namespace example.y20210925
                 allEnemies[i].enemyAvailability = true;
             }
 
+            // 启动AI 协程
             StartAI();
         }
 
@@ -35,6 +36,7 @@ namespace example.y20210925
             AI_Loop_Coroutine = StartCoroutine(AI_Loop(null));
         }
 
+        // AI 协程循环
         IEnumerator AI_Loop(EnemyScript enemy)
         {
             // 如果活动的敌人数量为0，停止AI协程
@@ -44,15 +46,21 @@ namespace example.y20210925
                 yield break;
             }
 
+            // 在游戏中，无论是动作，还是关卡增加随机，有助于游戏性的增加
             yield return new WaitForSeconds(Random.Range(0.5f, 1.5f));
 
+            // 随机选择一个除了enemy 以外的敌人
             EnemyScript attackingEnemy = RandomEnemyExcludingOne(enemy);
 
             if (attackingEnemy == null)
+            {
                 attackingEnemy = RandomEnemy();
+            }
 
             if (attackingEnemy == null)
+            {
                 yield break;
+            }
 
             yield return new WaitUntil(() => attackingEnemy.IsRetreating() == false);
             yield return new WaitUntil(() => attackingEnemy.IsLockedTarget() == false);
@@ -67,7 +75,9 @@ namespace example.y20210925
             yield return new WaitForSeconds(Random.Range(0, 0.5f));
 
             if (AliveEnemyCount() > 0)
+            {
                 AI_Loop_Coroutine = StartCoroutine(AI_Loop(attackingEnemy));
+            }    
         }
 
         public EnemyScript RandomEnemy()
@@ -77,11 +87,15 @@ namespace example.y20210925
             for (int i =0; i < allEnemies.Length; i++)
             {
                 if (allEnemies[i].enemyAvailability)
+                {
                     enemyIndexes.Add(i);
+                }
             }
 
             if (enemyIndexes.Count == 0)
+            {
                 return null;
+            }
 
             EnemyScript randomEnemy;
             int randomIndex = Random.Range(0, enemyIndexes.Count);
@@ -97,7 +111,9 @@ namespace example.y20210925
             for (int i=0; i< allEnemies.Length; i++)
             {
                 if (allEnemies[i].enemyAvailability && allEnemies[i].enemyScript != exclude)
+                {
                     enemyIndexes.Add(i);
+                }
             }
 
             EnemyScript randomEnemy;
@@ -113,7 +129,9 @@ namespace example.y20210925
             for (int i = 0; i < allEnemies.Length; i++)
             {
                 if (allEnemies[i].enemyAvailability)
+                {
                     count++;
+                }
             }
             return count;
         }
@@ -136,7 +154,9 @@ namespace example.y20210925
             for (int i = 0; i < allEnemies.Length; i++)
             {
                 if (allEnemies[i].enemyScript.isActiveAndEnabled)
+                {
                     count++;
+                }
             }
             aliveEnemyCount = count;
             return count;
@@ -147,11 +167,15 @@ namespace example.y20210925
             for (int i = 0; i < allEnemies.Length; i++)
             {
                 if (allEnemies[i].enemyScript == enemy)
+                {
                     allEnemies[i].enemyAvailability = state;
+                }
             }
 
             if (FindObjectOfType<EnemyDetection>().CurrentTarget() == enemy)
+            {
                 FindObjectOfType<EnemyDetection>().SetCurrentTarget(null);
+            }
         }
     }
 

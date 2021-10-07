@@ -38,11 +38,15 @@ namespace example.y20210925
             inputDirection = forward * movementInput.moveAxis.y + right * movementInput.moveAxis.x;
             inputDirection = inputDirection.normalized;
 
+            // 用一个Sphere（球形）的触发器探测是否特定范围内有敌人
+            // 这个放在Update() 中，性能怎么样呢？
             RaycastHit info;
             if (Physics.SphereCast(transform.position, 3f, inputDirection, out info, 10, layerMask))
             {
                 if (info.collider.transform.GetComponent<EnemyScript>().IsAttackable())
+                {
                     currentTarget = info.collider.transform.GetComponent<EnemyScript>();
+                }
             }
         }
 
@@ -67,7 +71,9 @@ namespace example.y20210925
             Gizmos.DrawRay(transform.position, inputDirection);
             Gizmos.DrawWireSphere(transform.position, 1);
             if (CurrentTarget() != null)
+            {
                 Gizmos.DrawSphere(CurrentTarget().transform.position, 0.5f);
+            }   
         }
     }
 }

@@ -1,3 +1,12 @@
+## 最后的缺口
+
+1. WASD 控制玩家移动的效果还是有问题，不知道是不是Input System 的用法不对
+2. Batman-Arkham-Combat 的Shader 都没有实现
+3. 击倒最后一个敌人时时间放慢、镜头特写的效果没有实现
+4. 思考如何使用状态机模式重构这个实现！
+
+## 一些准备工作
+
 >[https://github.com/mixandjam/Batman-Arkham-Combat](https://github.com/mixandjam/Batman-Arkham-Combat)
 
 >[Unity教程 复刻蝙蝠侠式自由战斗系统，源码见简介 mix and jam](https://www.bilibili.com/video/BV1zM4y157rt)

@@ -26,6 +26,8 @@ namespace example.y20210925
 
             transform.position = pos;
             particle.Play();
+
+            // DOTween 真的很强大，也可以用于粒子特效
             particleMaterial.DOFade(1, 0);
             particleMaterial.DOFade(0, pmain.startLifetime.constant).SetEase(Ease.InExpo);
         }

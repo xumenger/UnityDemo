@@ -54,6 +54,7 @@ namespace example.y20210925
         }
 
         // 玩家移动与旋转
+        // 现在WASD 控制玩家移动的效果很差，还没有定位出来原因！
         void PlayerMoveAndRotation()
         {
             // 获取相机的朝向
