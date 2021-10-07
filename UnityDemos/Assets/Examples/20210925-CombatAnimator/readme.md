@@ -46,6 +46,55 @@
 
 参考[好好玩游戏：Cinemachine 实现角色跟随](http://www.xumenger.com/cine-machine-20210914/)、[好好玩游戏：Cinemachine 与Timeline 实现镜头融合](http://www.xumenger.com/cine-machine-20210915/) 调整至合适的视角
 
+## 游戏所有手动配置
+
+选中Hierarchy 中的ybot，为其添加如下组件
+
+* Animator
+* CharacterController
+* MovementInput.cs
+* CombatScript.cs
+* DebugRestarter.cs
+* AttackTrailController.cs
+
+在ybot 下面添加如下游戏物体
+
+* punch_position，position 设置为(0, 0.9, 1)
+* impulse_source，并添加Cinemachine Impulse Source 组件
+* enemy_detector，添加EnemyDetection.cs、Sphere Collider
+* attack_trail，
+
+为Enemies 增加EnemyManager.cs
+
+为Enemies 下的每个Enemy，添加如下组件
+
+* Animator
+* CharacterController
+* EnemyScript.cs
+
+粒子系统相关设置
+
+* 在Hierarchy 中创建一个例子系统，命名为HitParticle
+    * 然后参考Batman-Arkham-Combat 的配置，设置每一个参数
+    * 增加ParticleSystemScript.cs 脚本
+    * 也会用到使用Shader Graph 实现的Shader 材质，这个我暂时没有去复刻
+* 在HitParticle 下分别增加Particle System (1)、Particle System (2)
+* 在每个Enemy 下面增加CounterParticle 粒子特效
+* 在CounterParticle 下面分别增加Sparks-Particle、PulsingCircle-Particle 粒子特效
+* 并将CounterParticle 设置为Enemy 的EnemyScript 的CounterParticle 属性上
+
+>做粒子特效的时候，材质、Shader 这次并没有对应复刻！
+
+Input System 配置，完全参考Batman-Arkham-Combat 的配置即可
+
+动画事件配置
+
+* Cross Punch 增加HitEvent
+* Flying Knee Punch Combo 增加SetTrailParent、HitEvent
+* Inside Crescent Kick 增加SetTrailParent、HitEvent
+* Flying Kick 增加SetTrailParent、HitEvent
+* Flip Kick (1) 增加SetTrailParent、HitEvent
+
 ## 实现自由战斗的思路
 
 >[Unity教程 复刻蝙蝠侠式自由战斗系统，源码见简介 mix and jam](https://www.bilibili.com/video/BV1zM4y157rt)
