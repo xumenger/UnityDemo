@@ -79,12 +79,16 @@ namespace example.y20210925
 
             // if the player is moving the movement input, use the "directional" detection to determine the enemy
             if (enemyDetection.InputMagnitude() > 0.2f)
+            {
                 lockedTarget = enemyDetection.CurrentTarget();
+            }
 
             // extra check to see if the locked target was set
             if (lockedTarget == null)
+            {
                 // 随机找一个作为被锁定的敌人
                 lockedTarget = enemyManager.RandomEnemy();
+            }
 
             // Attack Target
             Attack(lockedTarget, TargetDistance(lockedTarget));
@@ -135,7 +139,6 @@ namespace example.y20210925
 
             target.StopMoving();
             MoveTowardsTarget(target, movementDuration);
-
 
             IEnumerator AttackCoroutine(float duration)
             {
@@ -273,7 +276,7 @@ namespace example.y20210925
 
         bool isLastHit()
         {
-            if (lockedTarget = null)
+            if (lockedTarget == null)
                 return false;
 
             return enemyManager.AliveEnemyCount() == 1 && lockedTarget.health <= 1;
