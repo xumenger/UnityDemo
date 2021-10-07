@@ -10,9 +10,9 @@ namespace example.y20210925
     {
         // Declarations
         private Animator animator;
-        private CombatScript playerCombat;
-        private EnemyManager enemyManager;
-        private EnemyDetection enemyDetection;
+        private CombatScript playerCombat;       // 玩家攻击脚本
+        private EnemyManager enemyManager;       // 敌人管理器
+        private EnemyDetection enemyDetection;   // 敌人探测器
         private CharacterController characterController;
 
         [Header("Stats")]
@@ -25,11 +25,11 @@ namespace example.y20210925
         [SerializeField] private bool isMoving;
         [SerializeField] private bool isRetreating;          // 撤退
         [SerializeField] private bool isLockedTarget;
-        [SerializeField] private bool isStunned;            // 打昏
+        [SerializeField] private bool isStunned;             // 打昏
         [SerializeField] private bool isWaiting = true;
 
         [Header("Polish")]
-        [SerializeField] private ParticleSystem counterParticle;
+        [SerializeField] private ParticleSystem counterParticle;    // 反击粒子特效
 
         private Coroutine PrepareAttackCoroutine;
         private Coroutine RetreatCoroutine;
@@ -51,9 +51,9 @@ namespace example.y20210925
             playerCombat = FindObjectOfType<CombatScript>();
             enemyDetection = playerCombat.GetComponentInChildren<EnemyDetection>();
 
-            playerCombat.OnHit.AddListener((x) => OnPlayerHit(x));
-            playerCombat.OnCounterAttack.AddListener((x) => OnPlayerCounter(x));
-            playerCombat.OnTrajectory.AddListener((x) => OnPlayerTrajectory(x));
+            playerCombat.OnHit.AddListener((x) => OnPlayerHit(x));                 // 添加监听器：玩家受到攻击时的回调
+            playerCombat.OnCounterAttack.AddListener((x) => OnPlayerCounter(x));   // 
+            playerCombat.OnTrajectory.AddListener((x) => OnPlayerTrajectory(x));   // 
 
             MovementCoroutine = StartCoroutine(EnemyMovement());
         }
@@ -112,7 +112,7 @@ namespace example.y20210925
                 }
 
                 animator.SetTrigger("Hit");
-                transform.DOMove(transform.position - (transform.forward / 2), 0.3f).SetDelay(.1f);
+                transform.DOMove(transform.position - (transform.forward / 2), 0.3f).SetDelay(0.1f);
 
                 StopMoving();
             }
@@ -198,7 +198,8 @@ namespace example.y20210925
 
             if (active)
             {
-                counterParticle.Play();
+                // 现在的粒子效果并不好，暂时关闭
+                //counterParticle.Play();
             }
             else
             {
@@ -219,9 +220,9 @@ namespace example.y20210925
                 moveSpeed = 2;
 
             // Set Animtor values
-            animator.SetFloat("InputMagnitude", (characterController.velocity.normalized.magnitude * direction.z) / (5 / moveSpeed), .2f, Time.deltaTime);
+            animator.SetFloat("InputMagnitude", (characterController.velocity.normalized.magnitude * direction.z) / (5 / moveSpeed), 0.2f, Time.deltaTime);
             animator.SetBool("Strafe", (direction == Vector3.right || direction == Vector3.left));
-            animator.SetFloat("StrafeDirection", direction.normalized.x, .2f, Time.deltaTime);
+            animator.SetFloat("StrafeDirection", direction.normalized.x, 0.2f, Time.deltaTime);
 
             // Don't do anything if isMoving is false
             if (!isMoving)
@@ -250,24 +251,31 @@ namespace example.y20210925
             if (!isPreparingAttack)
                 return;
 
+            // 判断敌人与玩家的距离是否小于2
             if (Vector3.Distance(transform.position, playerCombat.transform.position) < 2)
             {
+                // 如果小于2，则停止移动
                 StopMoving();
+
                 if (!playerCombat.isCountering && !playerCombat.isAttackingEnemy)
+                    // 如果玩家不处于防守、攻击状态，则敌人发起攻击
                     Attack();
                 else
+                    // 否则敌人准备攻击
                     PrepareAttack(false);
             }
         }
 
         private void Attack()
         {
-            transform.DOMove(transform.position + (transform.forward / 1), .5f);
+            transform.DOMove(transform.position + (transform.forward / 1), 0.5f);
             animator.SetTrigger("AirPunch");
         }
 
+        // 在动画上设置的动画事件，用于判断是否Hit 是否发生
         public void HitEvent()
         {
+            // 如果敌人攻击，玩家不处于防守/攻击状态，则处理受伤逻辑
             if (!playerCombat.isCountering && !playerCombat.isAttackingEnemy)
                 playerCombat.DamageEvent();
 

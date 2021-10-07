@@ -7,6 +7,9 @@ namespace example.y20210925
     public class AttackTrailController : MonoBehaviour
     {
         // TrailRenderer 类的作用是什么？
+        // LineRender和TrailRender是两个好东西，很多Unity拖尾特效都会使用到它们
+        // https://www.cnblogs.com/driftingclouds/p/6442847.html
+        // 如何在动作上添加挥拳、踢腿的扫尾效果？
         [SerializeField] private TrailRenderer trail;
 
         [Header("Reference")]

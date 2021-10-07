@@ -1,4 +1,6 @@
-参考[https://github.com/mixandjam/Batman-Arkham-Combat](https://github.com/mixandjam/Batman-Arkham-Combat)
+>[https://github.com/mixandjam/Batman-Arkham-Combat](https://github.com/mixandjam/Batman-Arkham-Combat)
+
+>[Unity教程 复刻蝙蝠侠式自由战斗系统，源码见简介 mix and jam](https://www.bilibili.com/video/BV1zM4y157rt)
 
 思考这几个点
 
@@ -7,7 +9,7 @@
 3. 反思别人的动画状态机是怎么设计的
 4. 脚本编写用到了哪些技术
 5. 用到了哪些特效、音效
-6. 如何用状态机模式崇高
+6. 如何用状态机模式重构
 
 ## 动画资源与配置
 
@@ -48,6 +50,8 @@
 
 ## 游戏所有手动配置
 
+>这些手动拖拽的配置，如何通过代码实现！
+
 选中Hierarchy 中的ybot，为其添加如下组件
 
 * Animator
@@ -62,7 +66,7 @@
 * punch_position，position 设置为(0, 0.9, 1)
 * impulse_source，并添加Cinemachine Impulse Source 组件
 * enemy_detector，添加EnemyDetection.cs、Sphere Collider
-* attack_trail，
+* attack_trail？
 
 为Enemies 增加EnemyManager.cs
 
@@ -83,11 +87,11 @@
 * 在CounterParticle 下面分别增加Sparks-Particle、PulsingCircle-Particle 粒子特效
 * 并将CounterParticle 设置为Enemy 的EnemyScript 的CounterParticle 属性上
 
->做粒子特效的时候，材质、Shader 这次并没有对应复刻！
+>做粒子特效的时候，材质、Shader 这次并没有对应复刻！现在做出来的粒子效果并不好，这部分还是要好好研究，以及如何结合Shader 做更好的效果
 
 Input System 配置，完全参考Batman-Arkham-Combat 的配置即可
 
-动画事件配置
+动画事件配置，在合适的帧设置动画事件，以触发对应的逻辑也是使得动作效果好的一个关键所在
 
 * Cross Punch 增加HitEvent
 * Flying Knee Punch Combo 增加SetTrailParent、HitEvent
@@ -95,7 +99,11 @@ Input System 配置，完全参考Batman-Arkham-Combat 的配置即可
 * Flying Kick 增加SetTrailParent、HitEvent
 * Flip Kick (1) 增加SetTrailParent、HitEvent
 
+为所有的Enemy 设置Layer 为Enemy！
+
 EnemyDetection 参考Batman-Arkham-Combat 配置EnemyManager、Layer Mask、Sphere Collider 等
+
+如果某个动作看起来太慢，可以在Animator 中试着调整这个动作节点的speed 属性！
 
 ## 实现自由战斗的思路
 
@@ -125,7 +133,7 @@ if (Physics.SphereCast(transform.position, 3f, inputDirection, out info, 10, lay
 {
     if (info.collider.transform.GetComponent<EnemyScript>().IsAttackable())
     {
-        currentTarge = info.collier.transform.GetComponent<EnemyScript>();
+        currentTarget = info.collier.transform.GetComponent<EnemyScript>();
     }
 }
 ```
@@ -163,7 +171,7 @@ void OnPlayerHit(EnemyScript target)
 }
 ```
 
-为了增加对攻击的影响，我添加了一个例子系统，该系统使用具有失真设置的材质、未点亮的材质。实现攻击波效果
+为了增加对攻击的影响，我添加了一个粒子系统，该系统使用具有失真设置的材质、未点亮的材质。实现攻击波效果
 
 然后我通过首次添加移动选项开始研究敌人的行为，为了让玩家循环而不是左右移动，敌人会不断地看着玩家，然后使用与面向方向垂直的方向进行移动
 

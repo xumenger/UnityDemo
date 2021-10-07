@@ -146,7 +146,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &33633559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5175,7 +5175,7 @@ MonoBehaviour:
   m_ImpulseDefinition:
     m_ImpulseChannel: 1
     m_RawSignal: {fileID: 0}
-    m_AmplitudeGain: 5.000311
+    m_AmplitudeGain: 7.55615
     m_FrequencyGain: 1
     m_RepeatMode: 0
     m_Randomize: 1
@@ -5693,7 +5693,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &349884439
 GameObject:
   m_ObjectHideFlags: 0
@@ -20845,7 +20845,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &701634494
 GameObject:
   m_ObjectHideFlags: 0
@@ -35845,7 +35845,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &1206498330
 GameObject:
   m_ObjectHideFlags: 0
@@ -70918,7 +70918,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &2031625086
 GameObject:
   m_ObjectHideFlags: 0
