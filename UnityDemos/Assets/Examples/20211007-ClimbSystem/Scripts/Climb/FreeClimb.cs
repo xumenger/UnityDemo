@@ -35,10 +35,12 @@ namespace example.y20211007
         public float vertical;
         public bool isMid;
 
+        // IKSnapshot 是在本源文件中自定义的类
         public IKSnapshot baseIKsnapshot;
 
         public FreeClimbAnimHook a_hook;    // 在Unity编辑器中手动拖入
 
+        // 第三人称控制器
         ThirdPersonController tpc;
 
         Transform helper;
@@ -64,7 +66,7 @@ namespace example.y20211007
             a_hook.Init(this, helper);
 
             // Controller 这个层排在第11
-            ignoreLayers = ~(1 << 8);
+            ignoreLayers = ~(1 << 11);
 
             //CheckForClimb();
         }
@@ -117,6 +119,7 @@ namespace example.y20211007
         //    Tick(delta);
         //}
 
+        // 在ThirdPersonController 脚本中的Update() 方法中会调用这个Tick() 方法
         public void Tick(float d_time)
         {
             this.delta = d_time;
@@ -130,6 +133,7 @@ namespace example.y20211007
 
             if (!isLerping)
             {
+                // 按X 后，取消爬墙，从墙上跳下来
                 bool cancel = Input.GetKeyUp(KeyCode.X);
                 if (cancel)
                 {
@@ -148,7 +152,9 @@ namespace example.y20211007
                 if (!isMid)
                 {
                     if (moveDir == Vector3.zero)
+                    {
                         return;
+                    }
                 }
                 else
                 {

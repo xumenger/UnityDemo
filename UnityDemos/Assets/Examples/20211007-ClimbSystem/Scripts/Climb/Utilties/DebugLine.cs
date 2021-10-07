@@ -8,6 +8,8 @@ namespace example.y20211007
     {
         public int maxRenderers;
 
+        // https://www.cnblogs.com/driftingclouds/p/6442847.html
+        // 关于渲染部分的知识点还是不懂的太多了
         List<LineRenderer> lines = new List<LineRenderer>();
 
         private void Start()

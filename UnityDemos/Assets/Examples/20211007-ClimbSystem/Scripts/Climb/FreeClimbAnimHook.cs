@@ -17,12 +17,14 @@ namespace example.y20211007
         IKSnapshot next = new IKSnapshot();
         IKGoals goals = new IKGoals();
 
-        public float w_rh;
-        public float w_lh;
-        public float w_rf;
-        public float w_lf;
+        public float w_rh;  // 右手
+        public float w_lh;  // 左手
+        public float w_rf;  // 右脚
+        public float w_lf;  // 左脚
 
-        Vector3 rh, lh, rf, lf;
+        // 设置为public，以方便在面板上观察、调试
+        // 如何在代码中正确的设置这几个手脚IK 的位置，是保证攀爬动作是否看起来视角效果好的关键所在！！！
+        public Vector3 rh, lh, rf, lf;
         Transform h;
 
         bool isMirror;
@@ -299,10 +301,12 @@ namespace example.y20211007
         }
 
         // 应用Unity的Animator IK 去完善动画
+        // 勾选了Animator 的IK Pass 后，会在运行中回调该方法
         private void OnAnimatorIK()
         {
             delta = Time.deltaTime;
 
+            // 设置手脚的位置！
             SetIKPos(AvatarIKGoal.RightHand, rh, w_rh);
             SetIKPos(AvatarIKGoal.LeftHand, lh, w_lh);
             SetIKPos(AvatarIKGoal.RightFoot, rf, w_rf);
@@ -333,7 +337,9 @@ namespace example.y20211007
             ikState.positionWeight = w;
             ikState.position = Vector3.Lerp(ikState.position, tp, delta * lerpSpeed);
 
+            // 设置权重。value IK的权重，1代表完全使用IK值，0代表使用原动画的值
             anim.SetIKPositionWeight(goal, ikState.positionWeight);
+            // 设置目标位置为ikState.position
             anim.SetIKPosition(goal, ikState.position);
         }
 
@@ -375,10 +381,10 @@ namespace example.y20211007
 
         class IKStates
         {
-            public AvatarIKGoal goal;
-            public Vector3 position;
-            public float positionWeight;
-            public bool isSet = false;
+            public AvatarIKGoal goal;        // IK目标
+            public Vector3 position;         // 设置到哪个位置
+            public float positionWeight;     // 设置的权重
+            public bool isSet = false;       // 是否已经设置
         }
 
     }
