@@ -95,6 +95,8 @@ Input System 配置，完全参考Batman-Arkham-Combat 的配置即可
 * Flying Kick 增加SetTrailParent、HitEvent
 * Flip Kick (1) 增加SetTrailParent、HitEvent
 
+EnemyDetection 参考Batman-Arkham-Combat 配置EnemyManager、Layer Mask、Sphere Collider 等
+
 ## 实现自由战斗的思路
 
 >[Unity教程 复刻蝙蝠侠式自由战斗系统，源码见简介 mix and jam](https://www.bilibili.com/video/BV1zM4y157rt)
