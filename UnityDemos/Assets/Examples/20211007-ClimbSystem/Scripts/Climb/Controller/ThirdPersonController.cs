@@ -11,17 +11,18 @@ namespace example.y20211007
 
         Vector3 moveDirection;
         float moveAmount;
-        Vector3 camYForward;
 
+        Vector3 camYForward;
         Transform camHolder;
 
         Rigidbody rigid;
         Collider col;
+
         Animator anim;
 
         public float moveSpeed = 4;
         public float rotSpeed = 9;
-        public float jumpSpeed = 5;
+        public float jumpSpeed = 15;
 
         bool onGround;
         bool keepOffGround;
@@ -55,6 +56,79 @@ namespace example.y20211007
             anim = GetComponent<Animator>();
 
             freeClimb = GetComponent<FreeClimb>();
+        }
+
+
+        private void Update()
+        {
+            // 如果正处于攀爬状态
+            if (isClimbing)
+            {
+                freeClimb.Tick(Time.deltaTime);
+                return;
+            }
+
+            onGround = OnGround();
+
+            // 如果脱离地面
+            if (keepOffGround)
+            {
+                // realtimeSinceStartup 表示从游戏启动到当前的时间
+                if (Time.realtimeSinceStartup - savedTime > 0.5f)
+                {
+                    keepOffGround = false;
+                }
+            }
+
+            Jump();
+
+            if (!onGround && !keepOffGround)
+            {
+                if (!climbOff)
+                {
+                    // 检查是否处于攀爬状态
+                    isClimbing = freeClimb.CheckForClimb();
+                    if (isClimbing)
+                    {
+                        DisableController();
+                    }
+                }
+            }
+
+            if (climbOff)
+            {
+                if (Time.realtimeSinceStartup - climbTimer > 1)
+                {
+                    climbOff = false;
+                }
+            }
+
+            // 在Locomotion->jump up 的箭头上，调整两个动画的融合时间，可以调节动画过渡的效果
+            // 这个也是调整动画参数的一个关键所在！
+            anim.SetFloat("move", moveAmount);
+            anim.SetBool("jump", !onGround);
+
+        }
+
+
+        // 根据输入判断是否跳跃
+        void Jump()
+        {
+            if (onGround)
+            {
+                // 【Edit】=>【Project Settings】=>【Input Manager】
+                bool jump = Input.GetButton("Jump");
+                if (jump)
+                {
+                    Vector3 v = rigid.velocity;
+                    v.y = jumpSpeed;
+                    rigid.velocity = v;
+                    savedTime = Time.realtimeSinceStartup;
+                    keepOffGround = true;
+
+                    //rigid.AddForce(transform.up * jumpSpeed);
+                }
+            }
         }
 
 
@@ -108,79 +182,6 @@ namespace example.y20211007
         }
 
 
-        private void Update()
-        {
-            // 如果正处于攀爬状态
-            if (isClimbing)
-            {
-                freeClimb.Tick(Time.deltaTime);
-                return;
-            }
-
-            onGround = OnGround();
-
-            // 如果脱离地面
-            if (keepOffGround)
-            {
-                // realtimeSinceStartup 表示从游戏启动到当前的时间
-                if (Time.realtimeSinceStartup - savedTime > 0.5f)
-                {
-                    keepOffGround = false;
-                }
-            }
-
-            Jump();
-
-            if (!onGround && !keepOffGround)
-            {
-                if (!climbOff)
-                {
-                    // 检查是否处于攀爬状态
-                    isClimbing = freeClimb.CheckForClimb();
-                    if (isClimbing)
-                    {
-                        DisableController();
-                    }
-                }
-                    
-            }
-
-            if (climbOff)
-            {
-                if (Time.realtimeSinceStartup - climbTimer > 1)
-                {
-                    climbOff = false;
-                }
-            }
-
-            // 在Locomotion->jump up 的箭头上，调整两个动画的融合时间，可以调节动画过渡的效果
-            // 这个也是调整动画参数的一个关键所在！
-            anim.SetFloat("move", moveAmount);
-            anim.SetBool("jump", !onGround);
-            
-        }
-
-        // 根据输入判断是否跳跃
-        void Jump()
-        {
-            if (onGround)
-            {
-                // 【Edit】=>【Project Settings】=>【Input Manager】
-                bool jump = Input.GetButton("Jump");
-                if (jump)
-                {
-                    Vector3 v = rigid.velocity;
-                    v.y = jumpSpeed;
-                    rigid.velocity = v;
-                    savedTime = Time.realtimeSinceStartup;
-                    keepOffGround = true;
-
-                    //rigid.AddForce(transform.up * jumpSpeed);
-                }
-            }
-        }
-
-
         // 判断角色是否处于地面上
         bool OnGround()
         {
@@ -191,8 +192,8 @@ namespace example.y20211007
 
             Vector3 origin = transform.position;
             origin.y += 0.4f;
-
             Vector3 direction = -transform.up;
+
             RaycastHit hit;
             if (Physics.Raycast(origin, direction, out hit, 0.41f))
             {
@@ -232,7 +233,7 @@ namespace example.y20211007
             climbOff = true;
             climbTimer = Time.realtimeSinceStartup;
 
-            isClimbing = false;
+            //isClimbing = false;
         }
 
     }

@@ -17,30 +17,33 @@ namespace example.y20211007
         IKSnapshot next = new IKSnapshot();
         IKGoals goals = new IKGoals();
 
-        public float w_rh;  // 右手
-        public float w_lh;  // 左手
-        public float w_rf;  // 右脚
-        public float w_lf;  // 左脚
+        public float weight_rh;  // 右手
+        public float weight_lh;  // 左手
+        public float weight_rf;  // 右脚
+        public float weight_lf;  // 左脚
 
         // 设置为public，以方便在面板上观察、调试
         // 如何在代码中正确的设置这几个手脚IK 的位置，是保证攀爬动作是否看起来视角效果好的关键所在！！！
         public Vector3 rh, lh, rf, lf;
-        Transform h;
+        Transform helper;
 
         bool isMirror;
         bool isLeft;
 
         Vector3 prevMovDir;
 
+        List<IKStates> ikStates = new List<IKStates>();
+
         float delta;
         public float lerpSpeed = 1;
+        public float wallOffset = 0f;
 
 
         public void Init(FreeClimb c, Transform helper)
         {
             anim = c.anim;
             ikBase = c.baseIKsnapshot;
-            h = helper;
+            this.helper = helper;
         }
 
 
@@ -63,15 +66,15 @@ namespace example.y20211007
             IKSnapshot ik = CreateSnapshot(origin);
             CopySnapshot(ref current, ik);
 
-            SetIKPosition(isMid, goals.lf, current.lf, AvatarIKGoal.LeftFoot);
-            SetIKPosition(isMid, goals.rf, current.rf, AvatarIKGoal.RightFoot);
             SetIKPosition(isMid, goals.lh, current.lh, AvatarIKGoal.LeftHand);
             SetIKPosition(isMid, goals.rh, current.rh, AvatarIKGoal.RightHand);
+            SetIKPosition(isMid, goals.lf, current.lf, AvatarIKGoal.LeftFoot);
+            SetIKPosition(isMid, goals.rf, current.rf, AvatarIKGoal.RightFoot);
 
-            UpdateIKWeight(AvatarIKGoal.RightHand, 1);
             UpdateIKWeight(AvatarIKGoal.LeftHand, 1);
-            UpdateIKWeight(AvatarIKGoal.RightFoot, 1);
+            UpdateIKWeight(AvatarIKGoal.RightHand, 1);
             UpdateIKWeight(AvatarIKGoal.LeftFoot, 1);
+            UpdateIKWeight(AvatarIKGoal.RightFoot, 1);
         }
 
 
@@ -137,33 +140,42 @@ namespace example.y20211007
         }
 
 
-        public IKSnapshot CreateSnapshot(Vector3 o)
+        public IKSnapshot CreateSnapshot(Vector3 origin)
         {
             IKSnapshot r = new IKSnapshot();
-
-            Vector3 _rh = LocalToWorld(ikBase.rh);
-            r.rh = GetPosActual(_rh, AvatarIKGoal.RightHand);
 
             Vector3 _lh = LocalToWorld(ikBase.lh);
             r.lh = GetPosActual(_lh, AvatarIKGoal.LeftHand);
 
-            Vector3 _rf = LocalToWorld(ikBase.rf);
-            r.rf = GetPosActual(_rf, AvatarIKGoal.RightFoot);
+            Vector3 _rh = LocalToWorld(ikBase.rh);
+            r.rh = GetPosActual(_rh, AvatarIKGoal.RightHand);
 
             Vector3 _lf = LocalToWorld(ikBase.lf);
             r.lf = GetPosActual(_lf, AvatarIKGoal.LeftFoot);
+
+            Vector3 _rf = LocalToWorld(ikBase.rf);
+            r.rf = GetPosActual(_rf, AvatarIKGoal.RightFoot);
 
             return r;
         }
 
 
-        public float wallOffset = 0.0f;
+
+        Vector3 LocalToWorld(Vector3 position)
+        {
+            Vector3 r = helper.position;
+            r += helper.right * position.x;
+            r += helper.forward * position.z;
+            r += helper.up * position.y;
+
+            return r;
+        }
 
         Vector3 GetPosActual(Vector3 o, AvatarIKGoal goal)
         {
-            Vector3 r = o;
+            Vector3 returnPos = o;
             Vector3 origin = o;
-            Vector3 dir = h.forward;
+            Vector3 dir = helper.forward;
             origin += -(dir * 0.2f);
 
             RaycastHit hit;
@@ -171,12 +183,13 @@ namespace example.y20211007
             if (Physics.Raycast(origin, dir, out hit, 1.5f))
             {
                 Vector3 _r = hit.point + (hit.normal * wallOffset);
-                r = _r;
+                returnPos = _r;
                 isHit = true;
 
                 if (goal == AvatarIKGoal.LeftFoot || goal == AvatarIKGoal.RightFoot)
                 {
-                    if (hit.point.y > transform.position.y - 0.1f)
+                    // Leg is higher than hip
+                    if (hit.point.y > transform.position.y)
                     {
                         isHit = false;
                     }
@@ -188,41 +201,31 @@ namespace example.y20211007
                 switch (goal)
                 {
                     case AvatarIKGoal.RightHand:
-                        r = LocalToWorld(ikBase.rh);
+                        returnPos = LocalToWorld(ikBase.rh);
                         break;
                     case AvatarIKGoal.LeftHand:
-                        r = LocalToWorld(ikBase.lh);
+                        returnPos = LocalToWorld(ikBase.lh);
                         break;
                     case AvatarIKGoal.RightFoot:
-                        r = LocalToWorld(ikBase.rf);
+                        returnPos = LocalToWorld(ikBase.rf);
                         break;
                     case AvatarIKGoal.LeftFoot:
-                        r = LocalToWorld(ikBase.lf);
+                        returnPos = LocalToWorld(ikBase.lf);
                         break;
                     default:
                         break;
                 }
             }
 
-            return r;
-        }
-
-        Vector3 LocalToWorld(Vector3 p)
-        {
-            Vector3 r = h.position;
-            r += h.right * p.x;
-            r += h.forward * p.z;
-            r += h.up * p.y;
-
-            return r;
+            return returnPos;
         }
 
         public void CopySnapshot(ref IKSnapshot to, IKSnapshot from)
         {
-            to.rh = from.rh;
             to.lh = from.lh;
-            to.rf = from.rf;
+            to.rh = from.rh;
             to.lf = from.lf;
+            to.rf = from.rf;
         }
 
 
@@ -239,9 +242,9 @@ namespace example.y20211007
                 {
                     if (goal == AvatarIKGoal.LeftFoot || goal == AvatarIKGoal.RightFoot)
                     {
-                        if (p.y > transform.position.y - 0.25f)
+                        if (p.y > transform.position.y - 0.05f)
                         {
-                            UpdateIKPosition(goal, p);
+                            //UpdateIKPosition(goal, p);
                         }
                     }
                 }
@@ -259,46 +262,47 @@ namespace example.y20211007
 
         public void UpdateIKPosition(AvatarIKGoal goal, Vector3 pos)
         {
-            switch(goal)
+            switch (goal)
             {
-                case AvatarIKGoal.RightHand:
-                    rh = pos;
-                    break;
                 case AvatarIKGoal.LeftHand:
                     lh = pos;
                     break;
-                case AvatarIKGoal.RightFoot:
-                    rf = pos;
+                case AvatarIKGoal.RightHand:
+                    rh = pos;
                     break;
                 case AvatarIKGoal.LeftFoot:
                     lf = pos;
                     break;
+                case AvatarIKGoal.RightFoot:
+                    rf = pos;
+                    break;
                 default:
                     break;
             }
         }
 
 
-        public void UpdateIKWeight(AvatarIKGoal goal, float w)
+        public void UpdateIKWeight(AvatarIKGoal goal, float weight)
         {
             switch (goal)
             {
-                case AvatarIKGoal.RightHand:
-                    w_rh = w;
-                    break;
                 case AvatarIKGoal.LeftHand:
-                    w_lh = w;
+                    weight_lh = weight;
                     break;
-                case AvatarIKGoal.RightFoot:
-                    w_rf = w;
+                case AvatarIKGoal.RightHand:
+                    weight_rh = weight;
                     break;
                 case AvatarIKGoal.LeftFoot:
-                    w_lf = w;
+                    weight_lf = weight;
+                    break;
+                case AvatarIKGoal.RightFoot:
+                    weight_rf = weight;
                     break;
                 default:
                     break;
             }
         }
+
 
         // 应用Unity的Animator IK 去完善动画
         // 勾选了Animator 的IK Pass 后，会在运行中回调该方法
@@ -307,13 +311,14 @@ namespace example.y20211007
             delta = Time.deltaTime;
 
             // 设置手脚的位置！
-            SetIKPos(AvatarIKGoal.RightHand, rh, w_rh);
-            SetIKPos(AvatarIKGoal.LeftHand, lh, w_lh);
-            SetIKPos(AvatarIKGoal.RightFoot, rf, w_rf);
-            SetIKPos(AvatarIKGoal.LeftFoot, lf, w_lf);
+            SetIKPos(AvatarIKGoal.LeftHand, lh, weight_lh);
+            SetIKPos(AvatarIKGoal.RightHand, rh, weight_rh);
+            SetIKPos(AvatarIKGoal.LeftFoot, lf, weight_lf);
+            SetIKPos(AvatarIKGoal.RightFoot, rf, weight_rf);
         }
 
-        void SetIKPos(AvatarIKGoal goal, Vector3 tp, float w)
+
+        void SetIKPos(AvatarIKGoal goal, Vector3 targetPos, float weight)
         {
             IKStates ikState = GetIKStates(goal);
             if (ikState == null)
@@ -323,7 +328,7 @@ namespace example.y20211007
                 ikStates.Add(ikState);
             }
 
-            if (w == 0)
+            if (weight == 0)
             {
                 ikState.isSet = false;
             }
@@ -334,8 +339,8 @@ namespace example.y20211007
                 ikState.isSet = true;
             }
 
-            ikState.positionWeight = w;
-            ikState.position = Vector3.Lerp(ikState.position, tp, delta * lerpSpeed);
+            ikState.positionWeight = weight;
+            ikState.position = Vector3.Lerp(ikState.position, targetPos, delta * lerpSpeed);
 
             // 设置权重。value IK的权重，1代表完全使用IK值，0代表使用原动画的值
             anim.SetIKPositionWeight(goal, ikState.positionWeight);
@@ -346,7 +351,7 @@ namespace example.y20211007
 
         Transform GoalToBodyBones(AvatarIKGoal goal)
         {
-            switch(goal)
+            switch (goal)
             {
                 case AvatarIKGoal.LeftHand:
                     return anim.GetBoneTransform(HumanBodyBones.LeftHand);
@@ -364,7 +369,7 @@ namespace example.y20211007
         IKStates GetIKStates(AvatarIKGoal goal)
         {
             IKStates r = null;
-            foreach(IKStates i in ikStates)
+            foreach (IKStates i in ikStates)
             {
                 if (i.goal == goal)
                 {
@@ -377,8 +382,6 @@ namespace example.y20211007
         }
 
 
-        List<IKStates> ikStates = new List<IKStates>();
-
         class IKStates
         {
             public AvatarIKGoal goal;        // IK目标
@@ -390,15 +393,12 @@ namespace example.y20211007
     }
 
 
-
     public class IKGoals
     {
         public bool rh;
         public bool lh;
         public bool rf;
         public bool lf;
-
-
-
     }
+
 }

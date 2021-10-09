@@ -10,11 +10,13 @@ namespace example.y20211007
         public Animator anim;
 
         public bool isClimbing;
+        public bool isMid;
 
         bool inPosition;
         bool isLerping;
 
         float t;
+        float delta;
 
         //float posT;
         Vector3 startPos;
@@ -22,29 +24,30 @@ namespace example.y20211007
         //Quaternion startRot;
         //Quaternion targetRot;
 
-        public float positionOffset;
+        public float positionOffset = 1.0f;
         public float offsetFromWall = 0.3f;
         public float speed_mutiplier = 0.2f;
         public float climbSpeed = 3;
         public float rotateSpeed = 5;
 
-        public float rayTowardsMoveDir = 0.5f;
-        public float rayForwardTowardsWall = 1;
+        public float distanceToWall = 1;
+        public float distanceToMoveDirection = 1.0f;
 
-        public float horizontal;
-        public float vertical;
-        public bool isMid;
+        //public float rayTowardsMoveDir = 0.5f;
+        //public float rayForwardTowardsWall = 1;
+
+        //public float horizontal;
+        //public float vertical;
 
         // IKSnapshot 是在本源文件中自定义的类
         public IKSnapshot baseIKsnapshot;
 
         public FreeClimbAnimHook a_hook;    // 在Unity编辑器中手动拖入
 
+        Transform helper;
+
         // 第三人称控制器
         ThirdPersonController tpc;
-
-        Transform helper;
-        float delta;
 
         LayerMask ignoreLayers;
 
@@ -57,6 +60,12 @@ namespace example.y20211007
             Init();
         }
 
+        public void Tick()
+        {
+            delta = Time.deltaTime;
+            Tick(delta);
+        }
+
         private void Init()
         {
             anim = GetComponent<Animator>();
@@ -67,69 +76,19 @@ namespace example.y20211007
 
             // Controller 这个层排在第11
             ignoreLayers = ~(1 << 11);
-
-            //CheckForClimb();
         }
 
-        public bool CheckForClimb()
-        {
-            // 获取角色的位置
-            Vector3 origin = transform.position;
-            origin.y += 0.02f;
-            Vector3 dir = transform.forward;
-
-            // 通过射线判断是否射线击中“墙”
-            RaycastHit hit;
-            if (Physics.Raycast(origin, dir, out hit, 0.5f, ignoreLayers))
-            {
-#if UNITY_EDITOR
-                Debug.DrawLine(origin, hit.point, Color.red);
-#endif
-                helper.transform.position = PosWithOffset(origin, hit.point);
-                InitForClimb(hit);
-
-                return true;
-            }
-
-            return false;
-        }
-
-        void InitForClimb(RaycastHit hit)
-        {
-            isClimbing = true;
-
-            a_hook.enabled = true;
-
-            helper.transform.rotation = Quaternion.LookRotation(-hit.normal);
-            startPos = transform.position;
-            targetPos = hit.point + (hit.normal * offsetFromWall);
-            t = 0;
-            inPosition = false;
-
-            // CrossFade是按照动画的自身时间进行混合。如果动画10秒，混合持续时间0.2，会在2秒后混合完成
-            // 可以实现当前动画融合过渡到指定的动画动作
-            anim.CrossFade("hanging idle", 0.2f);
-        }
-
-
-        //void Update()
-        //{
-        //    delta = Time.deltaTime;
-
-        //    Tick(delta);
-        //}
 
         // 在ThirdPersonController 脚本中的Update() 方法中会调用这个Tick() 方法
-        public void Tick(float d_time)
+        public void Tick(float deltaTime)
         {
-            this.delta = d_time;
+            this.delta = deltaTime;
 
             if (!inPosition)
             {
                 GetInPosition();
                 return;
             }
-
 
             if (!isLerping)
             {
@@ -141,15 +100,15 @@ namespace example.y20211007
                     return;
                 }
 
-                horizontal = Input.GetAxis("Horizontal");
-                vertical = Input.GetAxis("Vertical");
-                float m = Mathf.Abs(horizontal) + Mathf.Abs(vertical);
+                float hor = Input.GetAxis("Horizontal");
+                float vert = Input.GetAxis("Vertical");
+                float m = Mathf.Abs(hor) + Mathf.Abs(vert);
 
-                Vector3 h = helper.right * horizontal;
-                Vector3 v = helper.up * vertical;
+                Vector3 h = helper.right * hor;
+                Vector3 v = helper.up * vert;
                 Vector3 moveDir = (h + v).normalized;
 
-                if (!isMid)
+                if (isMid)
                 {
                     if (moveDir == Vector3.zero)
                     {
@@ -196,16 +155,51 @@ namespace example.y20211007
             }
         }
 
+        public bool CheckForClimb()
+        {
+            // 获取角色的位置
+            Vector3 origin = transform.position;
+            origin.y += 0.02f;
+            Vector3 dir = transform.forward;
+
+            // 通过射线判断是否射线击中“墙”
+            RaycastHit hit;
+            if (Physics.Raycast(origin, dir, out hit, 0.5f, ignoreLayers))
+            {
+                helper.transform.position = PosWithOffset(origin, hit.point);
+                InitForClimb(hit);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        void InitForClimb(RaycastHit hit)
+        {
+            isClimbing = true;
+
+            a_hook.enabled = true;
+
+            helper.transform.rotation = Quaternion.LookRotation(-hit.normal);
+            startPos = transform.position;
+            targetPos = hit.point + (hit.normal * offsetFromWall);
+            t = 0;
+            inPosition = false;
+
+            // CrossFade是按照动画的自身时间进行混合。如果动画10秒，混合持续时间0.2，会在2秒后混合完成
+            // 可以实现当前动画融合过渡到指定的动画动作
+            anim.CrossFade("hanging idle", 2);
+        }
+
+
         bool CanMove(Vector3 moveDir)
         {
             Vector3 origin = transform.position;
-            float dis = rayTowardsMoveDir;
+            float dis = distanceToMoveDirection;
             Vector3 dir = moveDir;
 
-#if UNITY_EDITOR
-            //DebugLine.singleton.SetLine(origin, origin + (dir * dis), 0);
-            // Debug.DrawRay(origin, dir * dis, Color.red);
-#endif
+            DebugLine.singleton.SetLine(origin, origin + (dir * dis), 0);
 
             // Raycast towards the direction you want to move
             RaycastHit hit;
@@ -217,14 +211,12 @@ namespace example.y20211007
 
             origin += moveDir * dis;
             dir = helper.forward;
-            float dis2 = rayForwardTowardsWall;
 
-#if UNITY_EDITOR
-            //DebugLine.singleton.SetLine(origin, origin + (dir * dis2), 1);
-            // Debug.DrawRay(origin, dir * dis2, Color.blue);
-#endif
+            float dis2 = distanceToWall;
+            DebugLine.singleton.SetLine(origin, origin + (dir * dis2), 1);
+
             // Raycast forward towards the wall
-            if (Physics.Raycast(origin, dir, out hit, dis2))
+            if (Physics.Raycast(origin, dir, out hit, dis))
             {
                 helper.position = PosWithOffset(origin, hit.point);
                 helper.rotation = Quaternion.LookRotation(-hit.normal);
@@ -233,11 +225,11 @@ namespace example.y20211007
 
             origin = origin + (dir * dis2);
             dir = -moveDir;
-#if UNITY_EDITOR
-            DebugLine.singleton.SetLine(origin, origin + dir, 2);
-            // Debug.DrawRay(origin, dir * dis2, Color.blue);
-#endif
-            if (Physics.Raycast(origin, dir, out hit, rayForwardTowardsWall))
+
+            DebugLine.singleton.SetLine(origin, origin + dir, 1);
+
+            // Raycast for inside corners
+            if (Physics.Raycast(origin, dir, out hit, distanceToWall))
             {
                 helper.position = PosWithOffset(origin, hit.point);
                 helper.rotation = Quaternion.LookRotation(-hit.normal);
@@ -247,10 +239,7 @@ namespace example.y20211007
             origin += dir * dis2;
             dir = -Vector3.up;
 
-#if UNITY_EDITOR
-            DebugLine.singleton.SetLine(origin, origin + dir, 3);
-            //Debug.DrawRay(origin, dir, Color.yellow);
-#endif
+            DebugLine.singleton.SetLine(origin, origin + dir, 2);
 
             if (Physics.Raycast(origin, dir, out hit, dis2))
             {
@@ -266,17 +255,15 @@ namespace example.y20211007
             return false;
         }
 
+
         void GetInPosition()
         {
-            t += delta * 3;
+            t += delta * 10;
 
             if (t > 1)
             {
                 t = 1;
                 inPosition = true;
-
-                horizontal = 0;
-                vertical = 0;
 
                 // enable the ik
                 a_hook.CreatePositions(targetPos, Vector3.zero, false);
@@ -304,11 +291,12 @@ namespace example.y20211007
             Vector3 direction = -transform.up;
 
             RaycastHit hit;
-            if (Physics.Raycast(origin, direction, out hit, rayTowardsMoveDir + 0.05f, ignoreLayers))
+            if (Physics.Raycast(origin, direction, out hit, distanceToMoveDirection + 0.05f, ignoreLayers))
             {
                 CancelClimb();
             }
         }
+
 
         void CancelClimb()
         {

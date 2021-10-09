@@ -12,6 +12,12 @@ namespace example.y20211007
         // 关于渲染部分的知识点还是不懂的太多了
         List<LineRenderer> lines = new List<LineRenderer>();
 
+        public static DebugLine singleton;
+        private void Awake()
+        {
+            singleton = this;
+        }
+
         private void Start()
         {
             
@@ -26,7 +32,7 @@ namespace example.y20211007
 
         public void SetLine(Vector3 startpos, Vector3 endpos, int index)
         {
-            if (index > lines.Count)
+            if (index > lines.Count - 1)
             {
                 CreateLine(index);
             }
@@ -34,8 +40,5 @@ namespace example.y20211007
             lines[index].SetPosition(0, startpos);
             lines[index].SetPosition(1, endpos);
         }
-
-
-        public static DebugLine singleton;
     }
 }
