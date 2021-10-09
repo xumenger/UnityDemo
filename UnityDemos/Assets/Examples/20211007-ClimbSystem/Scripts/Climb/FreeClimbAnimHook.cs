@@ -14,7 +14,6 @@ namespace example.y20211007
 
         IKSnapshot ikBase;
         IKSnapshot current = new IKSnapshot();
-        IKSnapshot next = new IKSnapshot();
         IKGoals goals = new IKGoals();
 
         public float weight_rh;  // 右手
@@ -200,17 +199,17 @@ namespace example.y20211007
             {
                 switch (goal)
                 {
-                    case AvatarIKGoal.RightHand:
-                        returnPos = LocalToWorld(ikBase.rh);
-                        break;
                     case AvatarIKGoal.LeftHand:
                         returnPos = LocalToWorld(ikBase.lh);
                         break;
-                    case AvatarIKGoal.RightFoot:
-                        returnPos = LocalToWorld(ikBase.rf);
+                    case AvatarIKGoal.RightHand:
+                        returnPos = LocalToWorld(ikBase.rh);
                         break;
                     case AvatarIKGoal.LeftFoot:
                         returnPos = LocalToWorld(ikBase.lf);
+                        break;
+                    case AvatarIKGoal.RightFoot:
+                        returnPos = LocalToWorld(ikBase.rf);
                         break;
                     default:
                         break;

@@ -18,11 +18,8 @@ namespace example.y20211007
         float t;
         float delta;
 
-        //float posT;
         Vector3 startPos;
         Vector3 targetPos;
-        //Quaternion startRot;
-        //Quaternion targetRot;
 
         public float positionOffset = 1.0f;
         public float offsetFromWall = 0.3f;
@@ -33,23 +30,17 @@ namespace example.y20211007
         public float distanceToWall = 1;
         public float distanceToMoveDirection = 1.0f;
 
-        //public float rayTowardsMoveDir = 0.5f;
-        //public float rayForwardTowardsWall = 1;
-
-        //public float horizontal;
-        //public float vertical;
-
         // IKSnapshot 是在本源文件中自定义的类
         public IKSnapshot baseIKsnapshot;
 
-        public FreeClimbAnimHook a_hook;    // 在Unity编辑器中手动拖入
+        public FreeClimbAnimHook aHook;    // 在Unity编辑器中手动拖入
 
         Transform helper;
 
+        LayerMask ignoreLayers;
+
         // 第三人称控制器
         ThirdPersonController tpc;
-
-        LayerMask ignoreLayers;
 
 
         // Start is called before the first frame update
@@ -72,7 +63,7 @@ namespace example.y20211007
 
             helper = new GameObject().transform;
             helper.name = "climb helper";
-            a_hook.Init(this, helper);
+            aHook.Init(this, helper);
 
             // Controller 这个层排在第9
             ignoreLayers = ~(1 << 9);
@@ -93,7 +84,7 @@ namespace example.y20211007
             if (!isLerping)
             {
                 // 按X 后，取消爬墙，从墙上跳下来
-                bool cancel = Input.GetKeyUp(KeyCode.X);
+                bool cancel = Input.GetButtonDown("Jump");
                 if (cancel)
                 {
                     CancelClimb();
@@ -102,7 +93,6 @@ namespace example.y20211007
 
                 float hor = Input.GetAxis("Horizontal");
                 float vert = Input.GetAxis("Vertical");
-                float m = Mathf.Abs(hor) + Mathf.Abs(vert);
 
                 Vector3 h = helper.right * hor;
                 Vector3 v = helper.up * vert;
@@ -130,13 +120,12 @@ namespace example.y20211007
                 isLerping = true;
                 startPos = transform.position;
                 Vector3 tp = helper.position - transform.position;
-                float d = Vector3.Distance(helper.position, startPos) / 2;
                 tp *= positionOffset;
                 tp += transform.position;
                 targetPos = (isMid) ? tp : helper.position;
 
                 // enable the ik
-                a_hook.CreatePositions(targetPos, moveDir, isMid);
+                aHook.CreatePositions(targetPos, moveDir, isMid);
             }
             else
             {
@@ -178,8 +167,7 @@ namespace example.y20211007
         void InitForClimb(RaycastHit hit)
         {
             isClimbing = true;
-
-            a_hook.enabled = true;
+            aHook.enabled = true;
 
             helper.transform.rotation = Quaternion.LookRotation(-hit.normal);
             startPos = transform.position;
@@ -199,7 +187,7 @@ namespace example.y20211007
             float dis = distanceToMoveDirection;
             Vector3 dir = moveDir;
 
-            DebugLine.singleton.SetLine(origin, origin + (dir * dis), 0);
+            //DebugLine.singleton.SetLine(origin, origin + (dir * dis), 0);
 
             // Raycast towards the direction you want to move
             RaycastHit hit;
@@ -213,7 +201,7 @@ namespace example.y20211007
             dir = helper.forward;
 
             float dis2 = distanceToWall;
-            DebugLine.singleton.SetLine(origin, origin + (dir * dis2), 1);
+            //DebugLine.singleton.SetLine(origin, origin + (dir * dis2), 1);
 
             // Raycast forward towards the wall
             if (Physics.Raycast(origin, dir, out hit, dis))
@@ -226,7 +214,7 @@ namespace example.y20211007
             origin = origin + (dir * dis2);
             dir = -moveDir;
 
-            DebugLine.singleton.SetLine(origin, origin + dir, 1);
+            //DebugLine.singleton.SetLine(origin, origin + dir, 1);
 
             // Raycast for inside corners
             if (Physics.Raycast(origin, dir, out hit, distanceToWall))
@@ -239,7 +227,7 @@ namespace example.y20211007
             origin += dir * dis2;
             dir = -Vector3.up;
 
-            DebugLine.singleton.SetLine(origin, origin + dir, 2);
+            //DebugLine.singleton.SetLine(origin, origin + dir, 2);
 
             if (Physics.Raycast(origin, dir, out hit, dis2))
             {
@@ -266,7 +254,7 @@ namespace example.y20211007
                 inPosition = true;
 
                 // enable the ik
-                a_hook.CreatePositions(targetPos, Vector3.zero, false);
+                aHook.CreatePositions(targetPos, Vector3.zero, false);
             }
 
             // 使用插值修改玩家位置
@@ -303,7 +291,7 @@ namespace example.y20211007
             isClimbing = false;
             tpc.EnableController();
 
-            a_hook.enabled = false;
+            aHook.enabled = false;
         }
 
     }

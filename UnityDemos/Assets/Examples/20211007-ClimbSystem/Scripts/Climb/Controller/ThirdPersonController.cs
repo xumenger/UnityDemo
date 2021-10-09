@@ -215,6 +215,7 @@ namespace example.y20211007
         {
             rigid.isKinematic = false;
             col.enabled = true;
+            isClimbing = false;
 
             /**
              * CrossFade是按照动画的自身时间进行混合。如果动画10秒，混合持续时间0.2，会在2秒后混合完成
@@ -232,8 +233,6 @@ namespace example.y20211007
 
             climbOff = true;
             climbTimer = Time.realtimeSinceStartup;
-
-            //isClimbing = false;
         }
 
     }
