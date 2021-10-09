@@ -53,7 +53,7 @@ namespace example.y20211007
 
             camHolder = CameraHolder.singleton.transform;
 
-            anim = GetComponent<Animator>();
+            anim = GetComponentInChildren<Animator>();
 
             freeClimb = GetComponent<FreeClimb>();
         }

@@ -68,14 +68,14 @@ namespace example.y20211007
 
         private void Init()
         {
-            anim = GetComponent<Animator>();
+            anim = GetComponentInChildren<Animator>();
 
             helper = new GameObject().transform;
             helper.name = "climb helper";
             a_hook.Init(this, helper);
 
-            // Controller 这个层排在第11
-            ignoreLayers = ~(1 << 11);
+            // Controller 这个层排在第9
+            ignoreLayers = ~(1 << 9);
         }
 
 
