@@ -27,6 +27,7 @@ namespace example.y20211010
             for (int i = 0; i < selectedPieces.Length; i++)
             {
                 Transform charPiece = selectedPieces[i];
+
                 charPiece.GetChild(0).gameObject.SetActive(true);
 
                 mirrorZoom.Join(charPiece.DOScale(charPiece.localScale * 1.1f, 0.15f));
