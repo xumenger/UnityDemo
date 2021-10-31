@@ -8,6 +8,10 @@ using Cinemachine;
 
 namespace example.y20211024
 {
+    /**
+     * 因为粒子效果暂时没有复刻，所以本脚本中暂时将播放粒子特效的逻辑注释掉
+     * 
+     */
     //[RequireComponent(typeof(Animator))]
     public class ThrowController : MonoBehaviour
     {
@@ -161,7 +165,7 @@ namespace example.y20211024
             //Particle
             if (state)
             {
-                glowParticle.Play();
+                //glowParticle.Play();
             }
             else
             {
@@ -187,7 +191,7 @@ namespace example.y20211024
 
             //Trail
             trailRenderer.emitting = true;
-            trailParticle.Play();
+            //trailParticle.Play();
         }
 
         public void WeaponStartPull()
@@ -213,7 +217,7 @@ namespace example.y20211024
             hasWeapon = true;
 
             //Particle and trail
-            catchParticle.Play();
+            //catchParticle.Play();
             trailRenderer.emitting = false;
             trailParticle.Stop();
 
