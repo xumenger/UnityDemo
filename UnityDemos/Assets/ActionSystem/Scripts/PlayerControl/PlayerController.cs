@@ -19,6 +19,8 @@ namespace xum.action
         CharacterController controller;
         Animator animator;
 
+        Camera camera;
+
 
         // Start is called before the first frame update
         void Start()
@@ -26,10 +28,11 @@ namespace xum.action
             // 获取基础的组件
             controller = GetComponent<CharacterController>();
             animator = GetComponent<Animator>();
+            camera = Camera.main;
 
 
             // TODO 使用键鼠输入 or 手柄输入，可配置化
-            inputSystem = new PlayerKeyMouseInputSystem();
+            inputSystem = new PlayerKeyMouseInputSystem(camera);
 
             // 动画有限状态机
             fsmManager = new PlayerFSMManager(transform, this, controller, animator, inputSystem);

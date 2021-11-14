@@ -35,14 +35,14 @@ namespace xum.action
             return false;
         }
 
-        public virtual float GetVertical()
+        public virtual Vector3 GetVertical()
         {
-            return 0.0f;
+            return Vector3.zero;
         }
 
-        public virtual float GetHorizontal()
+        public virtual Vector3 GetHorizontal()
         {
-            return 0.0f;
+            return Vector3.zero;
         }
 
         // 获取移动速度

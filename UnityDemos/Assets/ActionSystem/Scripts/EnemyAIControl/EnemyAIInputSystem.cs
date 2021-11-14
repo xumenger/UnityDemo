@@ -33,15 +33,15 @@ namespace xum.action
         }
 
         // 判断向前
-        public override float GetVertical()
+        public override Vector3 GetVertical()
         {
-            return 0.8f;
+            return new Vector3(0.8f, 0f, 0f);
         }
 
         // 判断向右
-        public override float GetHorizontal()
+        public override Vector3 GetHorizontal()
         {
-            return 0.0f;
+            return Vector3.zero;
         }
     }
 }

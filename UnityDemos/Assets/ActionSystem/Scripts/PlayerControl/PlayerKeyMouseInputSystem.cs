@@ -6,6 +6,13 @@ namespace xum.action
 {
     public class PlayerKeyMouseInputSystem : InputSystem
     {
+        Camera camera;
+
+        public PlayerKeyMouseInputSystem(Camera camera) : base()
+        {
+            this.camera = camera;
+        }
+
         // 判断是否发起攻击
         public override bool IsAttack()
         {
@@ -31,15 +38,23 @@ namespace xum.action
         }
 
         // 判断向前
-        public override float GetVertical()
+        public override Vector3 GetVertical()
         {
-            return Input.GetAxis("Vertical");
+            var forward = camera.transform.forward;
+            forward.y = 0f;
+            forward.Normalize();
+
+            return forward * Input.GetAxis("Vertical");
         }
 
         // 判断向右
-        public override float GetHorizontal()
+        public override Vector3 GetHorizontal()
         {
-            return Input.GetAxis("Horizontal");
+            var right = camera.transform.right;
+            right.y = 0f;
+            right.Normalize();
+
+            return right * Input.GetAxis("Horizontal");
         }
 
         public override float GetMoveSpeed()
@@ -47,7 +62,7 @@ namespace xum.action
             float speed = 1.0f;
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                speed = 2.0f;
+                speed = 3.0f;
             }
 
             return speed;

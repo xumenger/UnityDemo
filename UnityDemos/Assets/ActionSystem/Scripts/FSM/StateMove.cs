@@ -14,10 +14,12 @@ namespace xum.action
         CharacterController controller;
 
         public float speed;
-        private Vector3 moveDirection = Vector3.zero;
+        private Vector3 desiredMoveDirection = Vector3.zero;
 
-        float forward = 0.0F;
-        float right = 0.0F;
+        public float desiredRotationSpeed = 0.01f;
+
+        private Vector3 InputX;
+        private Vector3 InputZ;
 
 
         public StateMove(Transform transform,
@@ -41,32 +43,34 @@ namespace xum.action
             animator.SetTrigger(AnimatorEnum.Anim_TMove);
 
             // 控制速度
-            animator.SetFloat(AnimatorEnum.Anim_F_MoveForward, forward);
-            animator.SetFloat(AnimatorEnum.Anim_F_MoveRight, right);
+            animator.SetFloat(AnimatorEnum.Anim_F_MoveForward, InputZ.magnitude);
+            animator.SetFloat(AnimatorEnum.Anim_F_MoveRight, InputX.magnitude);
         }
 
         public override void OnUpdate()
         {
             // TODO 这种方式获取的值变化太突然，导致动作切换太突兀，需要Lerp平缓化，使动作融合更舒服
-            forward = inputSystem.GetVertical();     // 前后速度
-            right = inputSystem.GetHorizontal();     // 左右速度
+            InputX = inputSystem.GetHorizontal();     // 左右速度
+            InputZ = inputSystem.GetVertical();       // 前后速度
+
 
             // 根据输入获取速度
             speed = inputSystem.GetMoveSpeed();
-            forward *= speed;
-            right *= speed;
 
-            moveDirection = new Vector3(forward, 0, right);
-            moveDirection = transform.TransformDirection(moveDirection);
+            desiredMoveDirection = InputZ + InputX;
 
-            moveDirection *= speed;
+            desiredMoveDirection *= speed;
 
             // 更新Animator 动画参数
-            animator.SetFloat(AnimatorEnum.Anim_F_MoveForward, forward);
-            animator.SetFloat(AnimatorEnum.Anim_F_MoveRight, right);
+            animator.SetFloat(AnimatorEnum.Anim_F_MoveForward, InputZ.magnitude);
+            animator.SetFloat(AnimatorEnum.Anim_F_MoveRight, InputX.magnitude);
 
-            // 设置Controller
-            controller.Move(moveDirection * Time.deltaTime);
+            // 设置Controller 移动
+            controller.Move(desiredMoveDirection * Time.deltaTime);
+
+            // 通过鼠标控制角色旋转
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
+
         }
 
         public override void OnEnd()
