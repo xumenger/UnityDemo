@@ -3,24 +3,26 @@ using System.Collections;
 
 /// <summary>
 /// 
-/// 1. 将Climb 脚本挂载到Player 角色身上
-/// 2. 在角色身上创建一个ClimbHelper 游戏物体（Cube），用于后续检测与墙的接触，并且拖到Climb 脚本的climbHelper 上
-///    用于确保玩家与墙的距离，这样玩家不会直接撞到墙上
-///    怎么实现不显式在角色上添加这个ClimbHelper 物体，而是通过代码在启动时生成？
-/// 3. 攀爬需要的动作从mixamo 下载，存放在Climb Animation 文件夹下
-/// 4. 新建一个Wall 层，为场景中的墙设置Wall 层
-///    并且为Climb 脚本的EnvLayer 参数选择Wall 层
-/// 5. 动画状态机、动画设置
-///    EnterClimb -> Climbing Blend Tree 的Has Exit Time 取消勾选
-///    Braced Hang Shimmy 设置 Root Transform Rotation: Original；Root Transform Position(Y): Feet；Root Transform Position(XZ): Original
-///    Hanging Idle (1) 进行同样的设置
-///    Climbing Up Wall 进行同样的设置
-///    Climbing Down Wall 进行同样的设置
-/// 6. 以上四个动作注意都要勾选Loop Time，否则播放一次后就停止了！
-/// 7. 以上四个动作注意必须还要勾选Loop Pose，否则即使取消勾选Animator 的Apply Root Motion 之后，动画的位移还是会产生影响！
-///    其他的动作也是一样，如果希望在取消勾选Animator 的Apply Root Motion 之后能够不让动作的位移产生影响，则动画的Loop Pose 必须勾选！
-/// 8. 注意在Climb Blend Tree 中对于Braced Hang Shimmy 镜像、速度的设置
-/// 9. 因为PlayerController 现在也有对于Input 输入的处理，测试的时候暂时将PlayerController 关闭
+/// 01. 将Climb 脚本挂载到Player 角色身上
+/// 02. 在角色身上创建一个ClimbHelper 游戏物体（Cube），用于后续检测与墙的接触，并且拖到Climb 脚本的climbHelper 上
+///     用于确保玩家与墙的距离，这样玩家不会直接撞到墙上
+///     怎么实现不显式在角色上添加这个ClimbHelper 物体，而是通过代码在启动时生成？
+/// 03. 攀爬需要的动作从mixamo 下载，存放在Climb Animation 文件夹下
+/// 04. 新建一个Wall 层，为场景中的墙设置Wall 层
+///     并且为Climb 脚本的EnvLayer 参数选择Wall 层
+/// 05. 动画状态机、动画设置
+///     EnterClimb -> Climbing Blend Tree 的Has Exit Time 取消勾选
+///     Braced Hang Shimmy 设置 Root Transform Rotation: Original；Root Transform Position(Y): Feet；Root Transform Position(XZ): Original
+///     Hanging Idle (1) 进行同样的设置
+///     Climbing Up Wall 进行同样的设置
+///     Climbing Down Wall 进行同样的设置
+/// 06. 以上四个动作注意都要勾选Loop Time，否则播放一次后就停止了！
+/// 07. 以上四个动作注意必须还要勾选Loop Pose，否则即使取消勾选Animator 的Apply Root Motion 之后，动画的位移还是会产生影响！
+///     其他的动作也是一样，如果希望在取消勾选Animator 的Apply Root Motion 之后能够不让动作的位移产生影响，则动画的Loop Pose 必须勾选！
+/// 08. 注意在Climb Blend Tree 中对于Braced Hang Shimmy 镜像、速度的设置
+/// 09. 因为PlayerController 现在也有对于Input 输入的处理，测试的时候暂时将PlayerController 关闭
+///     等待后续将攀爬动作重构到状态机系统中
+/// 10. 判断到达墙边触发爬墙动作这个应该用事件模型进行重构
 /// 
 /// </summary>
 public class Climb : MonoBehaviour
@@ -38,6 +40,7 @@ public class Climb : MonoBehaviour
     public float wallOffset = 0.5f;
 
     private Animator anim;
+    private CharacterController controller;
 
     public Transform climbHelper;
     private Vector3 headPos;
@@ -50,6 +53,8 @@ public class Climb : MonoBehaviour
     private void Start()
     {
         anim = GetComponent<Animator>();
+        controller = GetComponent<CharacterController>();
+
         CheckClimb();
     }
 
@@ -168,6 +173,8 @@ public class Climb : MonoBehaviour
             // Transform.Translate通过设置下一步移动的矢量方向和大小进行移动
             //Debug.Log()
             transform.Translate(input.x * climbSpeed * Time.deltaTime, input.y * climbSpeed * Time.deltaTime, 0);
+
+            Debug.Log(transform.position);
         }
         else
         {
