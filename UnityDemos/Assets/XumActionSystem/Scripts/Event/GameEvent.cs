@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,16 +7,9 @@ namespace xum.action
 {
     public class GameEvent : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
+        public bool isHappened()
         {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
+            return false;
         }
     }
 
