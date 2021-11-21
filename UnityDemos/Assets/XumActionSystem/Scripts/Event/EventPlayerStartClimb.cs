@@ -24,7 +24,7 @@ namespace xum.action
         }
 
         /// <summary>
-        /// 判断玩家是否走到墙边
+        /// 通过射线判断判断玩家是否走到墙边
         /// </summary>
         /// <returns></returns>
         public override bool isHappened()
