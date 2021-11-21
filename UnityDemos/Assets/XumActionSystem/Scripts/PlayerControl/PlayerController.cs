@@ -57,6 +57,18 @@ namespace xum.action
             fsmManager.OnUpdate();
 
         }
+
+
+        private void FixedUpdate()
+        {
+            fsmManager.OnFixedUpdate();
+        }
+
+
+        private void OnAnimatorIK(int layerIndex)
+        {
+            fsmManager.OnAnimatorIK(layerIndex);
+        }
     }
 
 }

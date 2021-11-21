@@ -87,7 +87,6 @@ public class Climb : MonoBehaviour
 
         // 播放到墙上的动画
         anim.CrossFade("EnterClimb", 0.2f);
-        Debug.Log("Hit Wall");
     }
 
     public Vector2 input;
@@ -176,7 +175,6 @@ public class Climb : MonoBehaviour
             //Debug.Log()
             transform.Translate(input.x * climbSpeed * Time.deltaTime, input.y * climbSpeed * Time.deltaTime, 0);
 
-            Debug.Log(transform.position);
         }
         else
         {

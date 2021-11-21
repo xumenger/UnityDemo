@@ -77,5 +77,14 @@ namespace xum.action
         // Trigger，右手挥动武器攻击
         public static string Anim_T_SlashRightHand = "Base Layer.slash right hand";
 
+        // Trigger，攀爬
+        public static string Anim_T_Climb  = "Base Layer.climb";
+
+        // Float，水平左右爬的速度
+        public static string Anim_F_ClimbHorizontal = "Base Layer.fClimbHorizontal";
+
+        // Float，垂直上下爬的速度
+        public static string Anim_F_ClimbVertical = "Base Layer.fClimbVertical";
+
     }
 }

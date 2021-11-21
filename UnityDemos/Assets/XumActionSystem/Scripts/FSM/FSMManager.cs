@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -45,7 +46,9 @@ namespace xum.action
         }
 
 
-        // Update is called once per frame
+        /// <summary>
+        /// Update is called once per frame
+        /// </summary>
         public void OnUpdate()
         {
             if (null != curState)
@@ -54,15 +57,45 @@ namespace xum.action
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public void OnFixedUpdate()
+        {
+            if (null != curState)
+            {
+                curState.OnFixedUpdate();
+            }
+        }
 
-        // 初始化角色的状态，由各个子类自己实现
+
+        /// <summary>
+        /// 用于方便在每个具体的状态类中做IK
+        /// 提供该接口
+        /// 以PlayerController 为例子
+        /// PlayerController.OnAnimatorIK() 调用FSMManager.OnAnimatorIK()
+        /// FSMManager.OnAnimatorIK 则调用具体状态类的OnAnimatorIK()
+        /// </summary>
+        /// <param name="layerIndex"></param>
+        public void OnAnimatorIK(int layerIndex)
+        {
+
+        }
+
+
+        /// <summary>
+        /// 初始化角色的状态，由各个子类自己实现
+        /// </summary>
         public virtual void InitAllFSMState()
         {
 
         }
 
 
-        // 状态切换
+        /// <summary>
+        /// 状态切换
+        /// </summary>
+        /// <param name="stateId"></param>
         public void ChangeToState(StateEnum stateId)
         {
             // 根据状态ID 获取状态
@@ -87,7 +120,9 @@ namespace xum.action
         }
 
 
-        // 切换到上一个状态
+        /// <summary>
+        /// 切换到上一个状态
+        /// </summary>
         public void ChangeToLastState()
         {
             // 如果上一个当前动作不允许切换，则先退出等待当前动画播放完
@@ -113,14 +148,21 @@ namespace xum.action
         }
 
 
-        // 必须MonoBehaviour 才有StartCoroutine() 协程方法
+        /// <summary>
+        /// 必须MonoBehaviour 才有StartCoroutine() 协程方法
+        /// </summary>
+        /// <param name="enumerator"></param>
+        /// <returns></returns>
         public Coroutine StartCoroutine(IEnumerator enumerator)
         {
             return this.behaviour.StartCoroutine(enumerator);
         }
 
 
-        // Debug 输出
+        /// <summary>
+        /// Debug 输出
+        /// </summary>
+        /// <param name="log"></param>
         public void DebugLog(string log)
         {
             Debug.Log(log);

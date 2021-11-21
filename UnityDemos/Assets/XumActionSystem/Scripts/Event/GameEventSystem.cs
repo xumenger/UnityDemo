@@ -24,10 +24,11 @@ namespace xum.action
         /// 但实际其实每一帧事件往往只会发生10个
         /// 那么就会有9990次没有必要的遍历，浪费计算量，影响性能
         /// 关于这一点需要考虑怎么优化！！
+        /// 
         /// </summary>
         void Update()
         {
-            // 遍历所有的事件
+            // 在每一帧里遍历所有的事件
             foreach(KeyValuePair<GameEvent, List<GameEventAction>> eventKV in eventDict)
             {
                 GameEvent gameEvent = eventKV.Key;

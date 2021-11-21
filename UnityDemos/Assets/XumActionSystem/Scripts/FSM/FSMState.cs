@@ -43,22 +43,58 @@ namespace xum.action
             this.fsmManager = fsmManager;
         }
 
+
+        /// <summary>
+        /// 从A状态切换到B状态时
+        /// 会先执行A的OnEnd() 方法
+        /// 然后执行B的OnStart() 方法
+        /// </summary>
         public virtual void OnStart()
         {
 
         }
 
+        /// <summary>
+        /// 如果正处在当前状态
+        /// 则OnUpdate() 方法逐帧回调
+        /// </summary>
         public virtual void OnUpdate()
         {
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual void OnFixedUpdate()
+        {
+
+        }
+
+        /// <summary>
+        /// 从A状态切换到B状态时
+        /// 会先执行A的OnEnd() 方法
+        /// 然后执行B的OnStart() 方法
+        /// </summary>
         public virtual void OnEnd()
         {
 
         }
 
         public virtual void DoEvent(object param)
+        {
+
+        }
+
+        /// <summary>
+        /// 用于方便在每个具体的状态类中做IK
+        /// 提供该接口
+        /// 以PlayerController 为例子
+        /// PlayerController.OnAnimatorIK() 调用FSMManager.OnAnimatorIK()
+        /// FSMManager.OnAnimatorIK 则调用具体状态类的OnAnimatorIK()
+        /// </summary>
+        /// <param name="layerIndex"></param>
+        public virtual void OnAnimatorIK(int layerIndex)
         {
 
         }
