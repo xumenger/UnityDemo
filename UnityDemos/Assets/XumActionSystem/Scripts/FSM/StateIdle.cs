@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace xum.action
 {
-    public class FSMIdle : FSMState
+    public class StateIdle : FSMState
     {
-        public FSMIdle(Transform transform,
-                       Animator animator,
-                       FSMManager fsmManager) : base(EChangeType.eTrigger, transform, animator, fsmManager)
+        public StateIdle(Transform transform,
+                         Animator animator,
+                         FSMManager fsmManager) : base(EChangeType.eTrigger, transform, animator, fsmManager)
         {
 
         }

@@ -5,11 +5,11 @@ using UnityEngine;
 
 namespace xum.action
 {
-    public class FSMRunForward : FSMState
+    public class StateRunForward : FSMState
     {
-        public FSMRunForward(Transform transform,
-                             Animator animator,
-                             FSMManager fsmManager) : base(EChangeType.eTrigger, transform, animator, fsmManager)
+        public StateRunForward(Transform transform,
+                               Animator animator,
+                               FSMManager fsmManager) : base(EChangeType.eTrigger, transform, animator, fsmManager)
         {
 
         }

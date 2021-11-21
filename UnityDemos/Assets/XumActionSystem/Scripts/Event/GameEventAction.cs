@@ -1,11 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace xum.action
 {
-    public class GameEventAction
+    public abstract class GameEventAction
     {
         private GameEventSystem gameEventSystem;
         private GameEvent gameEvent;
@@ -22,7 +17,7 @@ namespace xum.action
             this.gameEvent = gameEvent;
 
             // 注册到事件管理器中
-            gameEventSystem.registerEventAction(gameEvent, this);
+            this.gameEventSystem.registerEventAction(gameEvent, this);
         }
 
         /// <summary>
