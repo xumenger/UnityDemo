@@ -9,10 +9,10 @@ namespace xum.action
         CharacterController controller;
 
 
-        public StateJumpAttack(Transform transform,
+        public StateJumpAttack(GameObject gameObject,
                                Animator animator,
                                CharacterController controller,
-                               FSMManager fsmManager) : base(EChangeType.eTrigger, transform, animator, fsmManager)
+                               FSMManager fsmManager) : base(EChangeType.eTrigger, gameObject, animator, fsmManager)
         {
             this.controller = controller;
         }

@@ -23,6 +23,7 @@ namespace xum.action
         eJumpAttack,        // 跳起来攻击
         eFistAttack,        // 拳头攻击
         eSlashRightHand,    // 右手挥动武器攻击
+        eClimb,             // 攀爬
         eSize,
     }
 

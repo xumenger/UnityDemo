@@ -34,7 +34,7 @@ namespace xum.action
             inputSystem = new PlayerKeyMouseInputSystem(camera);
 
             // 动画有限状态机
-            fsmManager = new PlayerFSMManager(transform, this, controller, animator, inputSystem);
+            fsmManager = new PlayerFSMManager(gameObject, this, controller, animator, inputSystem);
         }
 
 
@@ -58,7 +58,6 @@ namespace xum.action
 
         }
 
-
         private void FixedUpdate()
         {
             fsmManager.OnFixedUpdate();
@@ -68,6 +67,16 @@ namespace xum.action
         private void OnAnimatorIK(int layerIndex)
         {
             fsmManager.OnAnimatorIK(layerIndex);
+        }
+
+
+        /// <summary>
+        /// 切换到指定动作状态
+        /// </summary>
+        /// <param name="stateId"></param>
+        public void ChangeToState(StateEnum stateId)
+        {
+            fsmManager.ChangeToState(stateId);
         }
     }
 

@@ -13,7 +13,29 @@ namespace xum.action
      */
     public class GameEventSystem : MonoBehaviour
     {
-        Dictionary<GameEvent, List<GameEventAction>> eventDict = new Dictionary<GameEvent, List<GameEventAction>>();
+        private Dictionary<GameEvent, List<GameEventAction>> eventDict = new Dictionary<GameEvent, List<GameEventAction>>();
+
+
+        // 玩家游戏对象，这个需要开发者将玩家在Unity拖动到这个属性上，这个方式不太好，后续优化
+        public GameObject Player;
+
+
+        /// <summary>
+        /// 在这里初始化所有的事件和事件处理类
+        ///
+        /// 这种编码方式有一个缺点，就是后续每新增一个事件，就需要在这里修改代码！
+        /// 后续参考Spring 的依赖注入来优化
+        /// 
+        /// </summary>
+        void Start()
+        {
+            // 注册玩家开始攀爬的事件及其方法
+            EventPlayerStartClimb eventPlayerStartClimb = new EventPlayerStartClimb(Player);
+            ActionPlayerStartClimb actionPlayerStartClimb = new ActionPlayerStartClimb(this, eventPlayerStartClimb);
+
+            // 
+
+        }
 
         /// <summary>
         /// Update is called once per frame
@@ -54,13 +76,14 @@ namespace xum.action
         /// <param name="eventAction"></param>
         public void registerEventAction(GameEvent gameEvent, GameEventAction eventAction)
         {
-            List<GameEventAction> actionList = eventDict[gameEvent];
-            if (null == actionList)
+            List<GameEventAction> actionList = null;
+
+            if (!eventDict.ContainsKey(gameEvent))
             {
-                actionList = new List<GameEventAction>();
-                eventDict[gameEvent] = actionList;
+                eventDict.Add(gameEvent, new List<GameEventAction>());
             }
 
+            actionList = eventDict[gameEvent];
             actionList.Add(eventAction);
         }
     }

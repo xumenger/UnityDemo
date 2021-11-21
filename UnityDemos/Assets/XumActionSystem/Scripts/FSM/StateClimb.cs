@@ -22,6 +22,12 @@ namespace xum.action
     /// * 因为PlayerController 现在也有对于Input 输入的处理，测试的时候暂时将PlayerController 关闭
     ///   等待后续将攀爬动作重构到状态机系统中
     /// * 判断到达墙边触发爬墙动作这个应该用事件模型进行重构
+    ///
+    ///
+    ///
+    /// 与攀爬动作相关的事件和事件处理类是
+    /// EventPlayerStartClimb
+    /// ActionPlayerStartClimb
     /// 
     /// </summary>
     public class StateClimb : FSMState
@@ -47,33 +53,46 @@ namespace xum.action
         // 攀爬速度
         public float climbSpeed = 0.5f;
 
-        public StateClimb(Transform transform,
+        public StateClimb(GameObject gameObject,
                           Animator animator,
-                          FSMManager fsmManager,
-                          CharacterController controller) : base(EChangeType.eTrigger, transform, animator, fsmManager)
+                          CharacterController controller,
+                          FSMManager fsmManager) : base(EChangeType.eTrigger, gameObject, animator, fsmManager)
         {
             this.controller = controller;
         }
 
 
+        /// <summary>
+        /// 这里的射线检测逻辑和EventPlayerStartClimb 中的重复了
+        /// 但是这里需要拿到射线信息
+        /// 所以暂时用这种重复编码的方式实现
+        /// 
+        /// </summary>
         public override void OnStart()
         {
-            CheckClimb();
+            Vector3 origin = gameObject.transform.position;
+            Vector3 dir = gameObject.transform.forward;
+
+            // 使用射线检测是否走到墙边，hit 表示射线命中墙的位置
+            RaycastHit hit;
+
+            if (Physics.Raycast(origin, dir, out hit, wallRayLength))
+            {
+                onWall = false;
+                // targetPos 的位置等于玩家根据射线检测后应该移动到的位置
+                targetPos = hit.point + hit.normal * wallOffset;
+
+                // 播放到墙上的动画
+                animator.CrossFade("EnterClimb", 0.2f);
+            }
+
+            
         }
 
 
         public Vector2 input;
         public override void OnUpdate()
         {
-            // 在Update 中实时检查是否在墙附近
-            if (!onWall)
-            {
-                // 如果不在墙附近，则不去检测，否则进行检测
-                if (!CheckClimb())
-                {
-                    return;
-                }
-            }
 
             // 爬墙的移动通过BlendTree 实现，这里通过设置攀爬动作的参数调整动画效果
             // 读取键盘输入，去播放动画
@@ -128,43 +147,43 @@ namespace xum.action
 
         public override void OnFixedUpdate()
         {
-            Debug.DrawLine(LeftHandIK - transform.forward, LeftHandIK + transform.forward * GroundDistance, Color.blue, Time.fixedDeltaTime);
-            Debug.DrawLine(RightHandIK - transform.forward, RightHandIK + transform.forward * GroundDistance, Color.blue, Time.fixedDeltaTime);
+            Debug.DrawLine(LeftHandIK - gameObject.transform.forward, LeftHandIK + gameObject.transform.forward * GroundDistance, Color.blue, Time.fixedDeltaTime);
+            Debug.DrawLine(RightHandIK - gameObject.transform.forward, RightHandIK + gameObject.transform.forward * GroundDistance, Color.blue, Time.fixedDeltaTime);
 
             // 左手IK 设置
-            if (Physics.Raycast(LeftHandIK - transform.forward, transform.forward, out RaycastHit hit, GroundDistance + 1, EnvLayer))
+            if (Physics.Raycast(LeftHandIK - gameObject.transform.forward, gameObject.transform.forward, out RaycastHit hit, GroundDistance + 1, EnvLayer))
             {
                 Debug.DrawRay(hit.point, hit.normal, Color.red, Time.fixedDeltaTime);
 
-                LeftHandPos = hit.point - transform.forward * GroundOffset;
-                LeftHandRot = Quaternion.FromToRotation(-transform.forward, hit.normal) * transform.rotation;
+                LeftHandPos = hit.point - gameObject.transform.forward * GroundOffset;
+                LeftHandRot = Quaternion.FromToRotation(-gameObject.transform.forward, hit.normal) * gameObject.transform.rotation;
             }
 
             // 右手IK 设置
-            if (Physics.Raycast(RightHandIK - transform.forward, transform.forward, out RaycastHit hit1, GroundDistance + 1, EnvLayer))
+            if (Physics.Raycast(RightHandIK - gameObject.transform.forward, gameObject.transform.forward, out RaycastHit hit1, GroundDistance + 1, EnvLayer))
             {
                 Debug.DrawRay(hit1.point, hit1.normal, Color.red, Time.fixedDeltaTime);
 
-                RightHandPos = hit1.point - transform.forward * GroundOffset;
-                RightHandRot = Quaternion.FromToRotation(-transform.forward, hit1.normal) * transform.rotation;
+                RightHandPos = hit1.point - gameObject.transform.forward * GroundOffset;
+                RightHandRot = Quaternion.FromToRotation(-gameObject.transform.forward, hit1.normal) * gameObject.transform.rotation;
             }
 
             // 在上下爬的时候会遇到拐角，需要调整旋转，否则视觉效果会很差
             // 先用射线检测：在头顶向前检测
             // hit2 是从我们的身体前方发射射线，返回它的法线
-            if (Physics.Raycast(transform.position + transform.up * offset, transform.forward, out RaycastHit hit2, 0.5f))
+            if (Physics.Raycast(gameObject.transform.position + gameObject.transform.up * offset, gameObject.transform.forward, out RaycastHit hit2, 0.5f))
             {
                 // 因为爬墙的时候，手部会先接触到拐角，拐角的法线就不再是垂直的，与身体的法线会形成一个夹角
                 // 当这个夹角大于1度，y<0 表示向下爬，就去旋转
                 if (Vector3.Angle(hit2.normal, hit.normal) > 1f && input.y < 0)
                 {
-                    transform.Rotate(transform.right, climbRotateSpeed * Time.deltaTime);
+                    gameObject.transform.Rotate(gameObject.transform.right, climbRotateSpeed * Time.deltaTime);
                 }
 
                 // y>0 表示向上爬，身体后方与手部法线有夹角的话，对应旋转
-                if (Vector3.Angle(-transform.forward, hit.normal) > 1f && input.y > 0)
+                if (Vector3.Angle(-gameObject.transform.forward, hit.normal) > 1f && input.y > 0)
                 {
-                    transform.Rotate(transform.right, -climbRotateSpeed * Time.deltaTime);
+                    gameObject.transform.Rotate(gameObject.transform.right, -climbRotateSpeed * Time.deltaTime);
                 }
             }
         }
@@ -193,61 +212,22 @@ namespace xum.action
             animator.SetIKRotation(AvatarIKGoal.RightHand, RightHandRot);
         }
 
-
-
-        /// <summary>
-        /// 检查是否要爬墙
-        /// </summary>
-        /// <returns></returns>
-        private bool CheckClimb()
-        {
-            Vector3 origin = transform.position;
-            Vector3 dir = transform.forward;
-
-            // 使用射线检测是否走到墙边，hit 表示射线命中墙的位置
-            RaycastHit hit;
-            Debug.DrawRay(origin, dir * wallRayLength, Color.yellow);
-            if (Physics.Raycast(origin, dir, out hit, wallRayLength))
-            {
-                // 如果打到墙的话，则初始化攀爬动作：从离墙比较远的位置靠近墙，并且间隔一定距离
-                InitClimb(hit);
-                return true;
-            }
-
-            return false;
-        }
-
-
-        /// <summary>
-        /// 如果打到墙的话，则初始化攀爬动作：从离墙比较远的位置靠近墙，并且间隔一定距离
-        /// </summary>
-        /// <param name="hit"></param>
-        private void InitClimb(RaycastHit hit)
-        {
-            onWall = false;
-            // targetPos 的位置等于玩家根据射线检测后应该移动到的位置
-            targetPos = hit.point + hit.normal * wallOffset;
-
-            // 播放到墙上的动画
-            animator.CrossFade("EnterClimb", 0.2f);
-        }
-
         /// <summary>
         /// 
         /// </summary>
         private void SetBodyPositionToWall()
         {
             // 如果当前玩家位置与射线命中墙的位置相差0.01f，则进入爬墙状态
-            if (Vector3.Distance(transform.position, targetPos) < 0.01f)
+            if (Vector3.Distance(gameObject.transform.position, targetPos) < 0.01f)
             {
                 onWall = true;
-                transform.position = targetPos;
+                gameObject.transform.position = targetPos;
                 return;
             }
 
             // 通过MoveTowards 控制玩家位置向射线命中的目标位置移动
-            Vector3 lerpTargetPos = Vector3.MoveTowards(transform.position, targetPos, 0.2f);
-            transform.position = lerpTargetPos;
+            Vector3 lerpTargetPos = Vector3.MoveTowards(gameObject.transform.position, targetPos, 0.2f);
+            gameObject.transform.position = lerpTargetPos;
         }
 
         /// <summary>
@@ -256,18 +236,18 @@ namespace xum.action
         public void FixBodyPos()
         {
             // InverseTransformPoint 变换位置从世界坐标到局部坐标。和Transform.TransformPoint相反。
-            Vector3 localClimbHelperPos = transform.InverseTransformPoint(climbHelper.position);
+            Vector3 localClimbHelperPos = gameObject.transform.InverseTransformPoint(climbHelper.position);
 
             Vector3 localHeadPos = new Vector3(0, localClimbHelperPos.y, 0);
-            headPos = transform.TransformPoint(localHeadPos);
+            headPos = gameObject.transform.TransformPoint(localHeadPos);
 
-            Debug.DrawRay(headPos, transform.forward * 1f, Color.red);
-            if (Physics.SphereCast(headPos, 0.1f, transform.forward, out hitInfo, 1))
+            Debug.DrawRay(headPos, gameObject.transform.forward * 1f, Color.red);
+            if (Physics.SphereCast(headPos, 0.1f, gameObject.transform.forward, out hitInfo, 1))
             {
-                Vector3 tempVector = transform.position - climbHelper.position;
-                if (Vector3.Distance(transform.position, hitInfo.point + tempVector) > 0.05f)
+                Vector3 tempVector = gameObject.transform.position - climbHelper.position;
+                if (Vector3.Distance(gameObject.transform.position, hitInfo.point + tempVector) > 0.05f)
                 {
-                    transform.position = hitInfo.point + tempVector;
+                    gameObject.transform.position = hitInfo.point + tempVector;
                 }
             }
         }
@@ -282,7 +262,7 @@ namespace xum.action
             {
                 // Transform.Translate通过设置下一步移动的矢量方向和大小进行移动
                 //Debug.Log()
-                transform.Translate(input.x * climbSpeed * Time.deltaTime, input.y * climbSpeed * Time.deltaTime, 0);
+                gameObject.transform.Translate(input.x * climbSpeed * Time.deltaTime, input.y * climbSpeed * Time.deltaTime, 0);
 
             }
             else

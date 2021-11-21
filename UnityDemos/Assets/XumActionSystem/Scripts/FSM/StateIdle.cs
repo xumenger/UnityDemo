@@ -6,9 +6,9 @@ namespace xum.action
 {
     public class StateIdle : FSMState
     {
-        public StateIdle(Transform transform,
+        public StateIdle(GameObject gameObject,
                          Animator animator,
-                         FSMManager fsmManager) : base(EChangeType.eTrigger, transform, animator, fsmManager)
+                         FSMManager fsmManager) : base(EChangeType.eTrigger, gameObject, animator, fsmManager)
         {
 
         }

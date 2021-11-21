@@ -23,6 +23,11 @@ using System.Collections;
 /// 09. 因为PlayerController 现在也有对于Input 输入的处理，测试的时候暂时将PlayerController 关闭
 ///     等待后续将攀爬动作重构到状态机系统中
 /// 10. 判断到达墙边触发爬墙动作这个应该用事件模型进行重构
+///
+///
+/// 2021-11-21 Modify by xumenger
+/// 将攀爬动作集成到事件驱动和动画状态机中
+/// 所以这份可以单独运行的攀爬实现，以后也用不到了，在Bakes 目录下备份下来
 /// 
 /// </summary>
 public class Climb : MonoBehaviour

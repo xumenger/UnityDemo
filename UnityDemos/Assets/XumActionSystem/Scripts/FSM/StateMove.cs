@@ -22,11 +22,11 @@ namespace xum.action
         private Vector3 InputZ;
 
 
-        public StateMove(Transform transform,
+        public StateMove(GameObject gameObject,
                          Animator animator,
                          CharacterController controller,
                          FSMManager fsmManager,
-                         InputSystem inputSystem) : base(EChangeType.e2DBlendTree, transform, animator, fsmManager)
+                         InputSystem inputSystem) : base(EChangeType.e2DBlendTree, gameObject, animator, fsmManager)
         {
             this.controller = controller;
 
@@ -69,7 +69,7 @@ namespace xum.action
             controller.Move(desiredMoveDirection * Time.deltaTime);
 
             // 通过鼠标控制角色旋转
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
+            gameObject.transform.rotation = Quaternion.Slerp(gameObject.transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
 
         }
 

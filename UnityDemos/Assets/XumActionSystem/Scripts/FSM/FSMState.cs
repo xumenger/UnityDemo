@@ -17,6 +17,7 @@ namespace xum.action
         eSize,
     }
 
+
     public abstract class FSMState 
     {
         protected EChangeType changeType;        // 动画控制、切换的方式
@@ -24,21 +25,21 @@ namespace xum.action
         protected bool canChange;                // 是否可以切换
         public bool CanChange => (canChange);
 
-        protected Transform transform;           // 游戏对象
+        protected GameObject gameObject;           // 游戏对象
         protected Animator animator;             // 动画控制器
 
         protected FSMManager fsmManager;         // 有限状态管理
 
 
         public FSMState(EChangeType changeType,
-                        Transform transform,
+                        GameObject gameObject,
                         Animator animator,
                         FSMManager fsmManager)
         {
             this.changeType = changeType;
             canChange = false;
 
-            this.transform = transform;
+            this.gameObject = gameObject;
             this.animator = animator;
             this.fsmManager = fsmManager;
         }
@@ -81,6 +82,10 @@ namespace xum.action
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="param"></param>
         public virtual void DoEvent(object param)
         {
 

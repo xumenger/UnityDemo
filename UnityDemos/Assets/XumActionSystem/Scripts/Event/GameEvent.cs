@@ -7,7 +7,7 @@ namespace xum.action
         /// 判断事件是否发生
         /// </summary>
         /// <returns></returns>
-        public bool isHappened()
+        public virtual bool isHappened()
         {
             return false;
         }

@@ -16,10 +16,10 @@ namespace xum.action
         private Vector3 moveDirection = Vector3.zero;
 
 
-        public StateJumpUp(Transform transform,
+        public StateJumpUp(GameObject gameObject,
                            Animator animator,
                            CharacterController controller,
-                           FSMManager fsmManager) : base(EChangeType.eTrigger, transform, animator, fsmManager)
+                           FSMManager fsmManager) : base(EChangeType.eTrigger, gameObject, animator, fsmManager)
         {
             this.controller = controller;
         }

@@ -9,9 +9,9 @@ namespace xum.action
         // TODO 以下变量实现配置化
         public float durationTime = 0.8f;      // 该动作只应该播放一次，持续时间
 
-        public StateSlashRightHand(Transform transform,
+        public StateSlashRightHand(GameObject gameObject,
                                    Animator animator,
-                                   FSMManager fsmManager) : base(EChangeType.eTrigger, transform, animator, fsmManager)
+                                   FSMManager fsmManager) : base(EChangeType.eTrigger, gameObject, animator, fsmManager)
         {
 
         }

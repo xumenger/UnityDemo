@@ -2,8 +2,8 @@ namespace xum.action
 {
     public abstract class GameEventAction
     {
-        private GameEventSystem gameEventSystem;
-        private GameEvent gameEvent;
+        protected GameEventSystem gameEventSystem;
+        protected GameEvent gameEvent;
 
         /// <summary>
         /// 在事件处理类构造的时候完成注册
@@ -23,7 +23,7 @@ namespace xum.action
         /// <summary>
         /// 其对应的事件发生后，对应回调该方法处理事件
         /// </summary>
-        public void doAction()
+        public virtual void doAction()
         {
             
         }

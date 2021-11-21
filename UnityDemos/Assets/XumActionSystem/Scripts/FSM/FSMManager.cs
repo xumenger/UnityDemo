@@ -8,7 +8,7 @@ namespace xum.action
     public class FSMManager
     {
         // 游戏物体的组件
-        protected Transform transform;
+        protected GameObject gameObject;
         protected MonoBehaviour behaviour;
         protected CharacterController controller;
         protected Animator animator;
@@ -22,14 +22,14 @@ namespace xum.action
 
         public Dictionary<StateEnum, FSMState> allStateDict;
 
-        public FSMManager(Transform transform,
+        public FSMManager(GameObject gameObject,
                           MonoBehaviour behaviour,
                           CharacterController controller,
                           Animator animator,
                           InputSystem inputSystem,
                           StateEnum stateId)
         {
-            this.transform = transform;
+            this.gameObject = gameObject;
             this.behaviour = behaviour;
             this.controller = controller;
             this.animator = animator;

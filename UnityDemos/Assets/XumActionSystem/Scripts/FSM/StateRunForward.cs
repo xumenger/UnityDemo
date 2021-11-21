@@ -7,9 +7,9 @@ namespace xum.action
 {
     public class StateRunForward : FSMState
     {
-        public StateRunForward(Transform transform,
+        public StateRunForward(GameObject gameObject,
                                Animator animator,
-                               FSMManager fsmManager) : base(EChangeType.eTrigger, transform, animator, fsmManager)
+                               FSMManager fsmManager) : base(EChangeType.eTrigger, gameObject, animator, fsmManager)
         {
 
         }
