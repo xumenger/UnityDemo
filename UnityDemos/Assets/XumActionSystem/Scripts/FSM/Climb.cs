@@ -85,7 +85,7 @@ public class Climb : MonoBehaviour
         // targetPos 的位置等于玩家根据射线检测后应该移动到的位置
         targetPos = hit.point + hit.normal * wallOffset;
 
-        // 播放在墙上的动画
+        // 播放到墙上的动画
         anim.CrossFade("EnterClimb", 0.2f);
         Debug.Log("Hit Wall");
     }
@@ -125,8 +125,10 @@ public class Climb : MonoBehaviour
         }
         else
         {
-            // 如果正在爬墙，则调整角色位置，处理运动
-            FixBodyPos();
+            // 如果正在爬墙，则调整角色位置。目前注释掉这一行的话会正常播放动作，为什么？
+            //FixBodyPos();
+
+            // 处理运动
             MoveHandle();
         }
     }
@@ -254,7 +256,9 @@ public class Climb : MonoBehaviour
         RightHandIK = anim.GetIKPosition(AvatarIKGoal.RightHand);
 
         if (enableIK == false)
+        {
             return;
+        }
 
         anim.SetIKPositionWeight(AvatarIKGoal.LeftHand, 1);
         anim.SetIKRotationWeight(AvatarIKGoal.LeftHand, 1);
