@@ -9,6 +9,7 @@ namespace xum.action
      * Add in 2021-09-21
      * 玩家控制模块
      * 
+     * 该脚本需要显式有开发者挂载到玩家游戏物体上
      */
     public class PlayerController : MonoBehaviour
     {

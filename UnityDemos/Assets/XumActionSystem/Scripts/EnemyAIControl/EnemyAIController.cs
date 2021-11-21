@@ -8,6 +8,8 @@ namespace xum.action
      * Add in 2021-09-21
      * 敌人控制模块
      * 
+     * 该脚本需要开发者显式挂载到敌人游戏物体上
+     * 
      */
     public class EnemyAIController : MonoBehaviour
     {
