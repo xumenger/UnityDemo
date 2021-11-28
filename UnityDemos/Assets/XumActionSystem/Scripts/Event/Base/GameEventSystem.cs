@@ -30,7 +30,7 @@ namespace xum.action
         /// 
         /// </summary>
         /// <param name="gameEvent"></param>
-        void publicEvent(GameEvent gameEvent)
+        public void publicEvent(GameEvent gameEvent)
         {
             // 如果事件字典中没有这个事件，直接返回
             if (!eventDict.ContainsKey(gameEvent.getEventEnum()))

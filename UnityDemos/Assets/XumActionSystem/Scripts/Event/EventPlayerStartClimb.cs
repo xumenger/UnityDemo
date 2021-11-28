@@ -14,34 +14,25 @@ namespace xum.action
     {
         private GameObject player;
 
-        // 射线长度
-        public float wallRayLength = 1;
 
-
+        /// <summary>
+        /// 构造方法
+        /// </summary>
+        /// <param name="player"></param>
         public EventPlayerStartClimb(GameObject player)
         {
             this.player = player;
         }
 
-        ///// <summary>
-        ///// 通过射线判断判断玩家是否走到墙边
-        ///// </summary>
-        ///// <returns></returns>
-        //public override bool isHappened()
-        //{
-        //    Vector3 origin = player.transform.position;
-        //    Vector3 dir = player.transform.forward;
-
-        //    // 使用射线检测是否走到墙边，hit 表示射线命中墙的位置
-        //    RaycastHit hit;
-        //    Debug.DrawRay(origin, dir * wallRayLength, Color.yellow);
-        //    if (Physics.Raycast(origin, dir, out hit, wallRayLength))
-        //    {
-        //        return true;
-        //    }
-
-        //    return false;
-        //}
+        /// <summary>
+        /// 返回这个事件对应的事件字典中key
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public override GameEventEnum getEventEnum()
+        {
+            return GameEventEnum.eClimbCheck;
+        }
 
 
         /// <summary>
