@@ -25,7 +25,7 @@ namespace xum.action
         /// eventDict 是所有GameEventSystem 子类共享的全局变量。不考虑多线程并发环境
         /// 
         /// </summary>
-        static private Dictionary<GameEventEnum, List<GameEventAction>> eventDict = new Dictionary<GameEventEnum, List<GameEventAction>>();
+        static private Dictionary<GameEventEnum, HashSet<GameEventAction>> eventDict = new Dictionary<GameEventEnum, HashSet<GameEventAction>>();
 
 
         /// <summary>
@@ -42,8 +42,8 @@ namespace xum.action
             }
 
             // 找到事件字典对应的处理类列表，回调所有
-            List<GameEventAction> actionList = eventDict[gameEvent.getEventEnum()];
-            foreach (GameEventAction eventAction in actionList)
+            HashSet<GameEventAction> actionSet = eventDict[gameEvent.getEventEnum()];
+            foreach (GameEventAction eventAction in actionSet)
             {
                 eventAction.doAction(gameEvent);
             }
@@ -58,15 +58,37 @@ namespace xum.action
         /// <param name="eventAction"></param>
         public void registerEventAction(GameEventAction eventAction)
         {
-            List<GameEventAction> actionList = null;
+            HashSet<GameEventAction> actionSet = null;
 
             if (!eventDict.ContainsKey(eventAction.getEventEnum()))
             {
-                eventDict.Add(eventAction.getEventEnum(), new List<GameEventAction>());
+                eventDict.Add(eventAction.getEventEnum(), new HashSet<GameEventAction>());
             }
 
-            actionList = eventDict[eventAction.getEventEnum()];
-            actionList.Add(eventAction);
+            actionSet = eventDict[eventAction.getEventEnum()];
+            actionSet.Add(eventAction);
+        }
+
+
+        /// <summary>
+        /// 移除事件
+        /// 
+        /// </summary>
+        /// <param name="eventAction"></param>
+        /// <returns></returns>
+        public bool removeEventAction(GameEventAction eventAction)
+        {
+            HashSet<GameEventAction> actionSet = null;
+
+            if (!eventDict.ContainsKey(eventAction.getEventEnum()))
+            {
+                return false;
+            }
+
+            actionSet = eventDict[eventAction.getEventEnum()];
+            actionSet.Remove(eventAction);
+
+            return true;
         }
     }
 }

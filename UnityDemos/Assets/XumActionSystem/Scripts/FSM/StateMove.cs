@@ -48,6 +48,7 @@ namespace xum.action
             animator.SetFloat(AnimatorEnum.Anim_F_MoveRight, InputX.magnitude);
         }
 
+
         public override void OnUpdate()
         {
             // TODO 这种方式获取的值变化太突然，导致动作切换太突兀，需要Lerp平缓化，使动作融合更舒服

@@ -46,6 +46,9 @@ namespace xum.action
 
         private CharacterController controller;
 
+        // 可以进行攀爬事件处理类
+        private ActionPlayerStartClimb actionPlayerStartClimb = new ActionPlayerStartClimb(GameEventEnum.eClimbCheck);
+
         public Transform climbHelper;
         private Vector3 headPos;
         private RaycastHit hitInfo;
@@ -61,7 +64,7 @@ namespace xum.action
             this.controller = controller;
 
             // 注册对应的事件和处理类
-            this.registerEventAction(new ActionPlayerStartClimb(GameEventEnum.eClimbCheck));
+            this.registerEventAction(this.actionPlayerStartClimb);
         }
 
 
@@ -73,6 +76,10 @@ namespace xum.action
         /// </summary>
         public override void OnStart()
         {
+            // 先移除攀爬事件处理类
+            this.removeEventAction(this.actionPlayerStartClimb);
+
+            // 检查爬墙状态
             Vector3 origin = gameObject.transform.position;
             Vector3 dir = gameObject.transform.forward;
 
@@ -195,6 +202,21 @@ namespace xum.action
         }
 
 
+        /// <summary>
+        /// 状态结束时，需要重新将攀爬事件处理注册回去
+        /// 
+        /// </summary>
+        public override void OnEnd()
+        {
+            // 注册对应的事件和处理类
+            this.registerEventAction(this.actionPlayerStartClimb);
+        }
+
+
+        /// <summary>
+        /// 动画IK 处理，修正手脚与墙的贴合度
+        /// </summary>
+        /// <param name="layerIndex"></param>
         public override void OnAnimatorIK(int layerIndex)
         {
             LeftHandIK = animator.GetIKPosition(AvatarIKGoal.LeftHand);
