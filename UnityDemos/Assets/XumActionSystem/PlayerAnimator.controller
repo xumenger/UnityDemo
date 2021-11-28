@@ -459,7 +459,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: EnterClimb
+  m_Name: idle to braced hang
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -473,7 +473,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: f51cdb00666ae4d0a92db174c726845e,
+  m_Motion: {fileID: -203655887218126122, guid: 8345a48800a7843388f9646eac335f2f,
     type: 3}
   m_Tag: 
   m_SpeedParameter: 

@@ -90,7 +90,7 @@ namespace xum.action
                 targetPos = hit.point + hit.normal * wallOffset;
 
                 // 播放到墙上的动画
-                animator.CrossFade("EnterClimb", 0.2f);
+                animator.CrossFade("idle to braced hang", 0.2f);
             }
 
         }
