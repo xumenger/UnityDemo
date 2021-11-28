@@ -42,7 +42,10 @@ namespace xum.action
         }
 
 
-        // Update is called once per frame
+        /// <summary>
+        /// Update is called once per frame
+        /// 
+        /// </summary>
         void Update()
         {
             // 是否跳跃
@@ -85,12 +88,19 @@ namespace xum.action
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void FixedUpdate()
         {
             fsmManager.OnFixedUpdate();
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="layerIndex"></param>
         private void OnAnimatorIK(int layerIndex)
         {
             fsmManager.OnAnimatorIK(layerIndex);
@@ -121,8 +131,14 @@ namespace xum.action
             // 使用射线检测是否走到墙边，hit 表示射线命中墙的位置
             RaycastHit hit;
             Debug.DrawRay(origin, dir * wallRayLength, Color.yellow);
-            if (Physics.Raycast(origin, dir, out hit, wallRayLength))
+
+            // ~LayerMask.NameToLayer("Wall") 实现只有与“Wall”层发生碰撞时才返回True
+            // 这样就有一个条件，就是如果玩家想实现攀爬，那么攀爬的对象需要设置为Wall
+            // 但是我更想实现的是判断，如果面前的对象比玩家高才爬墙，这样就不需要专门在Unity 中设置层来进行划分
+            // 希望是完全在代码中实现这个逻辑，减少配置
+            if (Physics.Raycast(origin, dir, out hit, wallRayLength, ~LayerMask.NameToLayer("Wall")))
             {
+                Debug.Log("Wall");
                 return true;
             }
 

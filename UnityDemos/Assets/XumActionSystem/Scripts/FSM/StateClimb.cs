@@ -79,9 +79,13 @@ namespace xum.action
             // 使用射线检测是否走到墙边，hit 表示射线命中墙的位置
             RaycastHit hit;
 
-            if (Physics.Raycast(origin, dir, out hit, wallRayLength))
+            // ~LayerMask.NameToLayer("Wall") 实现只有与“Wall”层发生碰撞时才返回True
+            // 这样就有一个条件，就是如果玩家想实现攀爬，那么攀爬的对象需要设置为Wall
+            // 但是我更想实现的是判断，如果面前的对象比玩家高才爬墙，这样就不需要专门在Unity 中设置层来进行划分
+            // 希望是完全在代码中实现这个逻辑，减少配置
+            if (Physics.Raycast(origin, dir, out hit, wallRayLength, ~LayerMask.NameToLayer("Wall")))
             {
-                onWall = false;
+                onWall = true;
                 // targetPos 的位置等于玩家根据射线检测后应该移动到的位置
                 targetPos = hit.point + hit.normal * wallOffset;
 
