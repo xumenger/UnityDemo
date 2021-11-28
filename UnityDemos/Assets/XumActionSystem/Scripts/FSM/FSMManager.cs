@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +18,7 @@ namespace xum.action
         protected CharacterController controller;
         protected Animator animator;
 
+        // 输入系统
         protected InputSystem inputSystem;
 
 
@@ -26,8 +26,20 @@ namespace xum.action
         FSMState lastState = null;    // 上一个状态
         FSMState curState = null;     // 当前状态
 
+        // 所有动作状态类字典
         public Dictionary<StateEnum, FSMState> allStateDict;
 
+
+        /// <summary>
+        /// 构造方法
+        /// 
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="behaviour"></param>
+        /// <param name="controller"></param>
+        /// <param name="animator"></param>
+        /// <param name="inputSystem"></param>
+        /// <param name="stateId"></param>
         public FSMManager(GameObject gameObject,
                           MonoBehaviour behaviour,
                           CharacterController controller,
@@ -54,6 +66,7 @@ namespace xum.action
 
         /// <summary>
         /// Update is called once per frame
+        /// 
         /// </summary>
         public void OnUpdate()
         {
@@ -62,6 +75,7 @@ namespace xum.action
                 curState.OnUpdate();
             }
         }
+
 
         /// <summary>
         /// 
@@ -81,16 +95,21 @@ namespace xum.action
         /// 以PlayerController 为例子
         /// PlayerController.OnAnimatorIK() 调用FSMManager.OnAnimatorIK()
         /// FSMManager.OnAnimatorIK 则调用具体状态类的OnAnimatorIK()
+        /// 
         /// </summary>
         /// <param name="layerIndex"></param>
         public void OnAnimatorIK(int layerIndex)
         {
-
+            if (null != curState)
+            {
+                curState.OnAnimatorIK(layerIndex);
+            }
         }
 
 
         /// <summary>
         /// 初始化角色的状态，由各个子类自己实现
+        /// 
         /// </summary>
         public virtual void InitAllFSMState()
         {
@@ -100,6 +119,7 @@ namespace xum.action
 
         /// <summary>
         /// 状态切换
+        /// 
         /// </summary>
         /// <param name="stateId"></param>
         public void ChangeToState(StateEnum stateId)
@@ -128,6 +148,7 @@ namespace xum.action
 
         /// <summary>
         /// 切换到上一个状态
+        /// 
         /// </summary>
         public void ChangeToLastState()
         {
@@ -156,6 +177,7 @@ namespace xum.action
 
         /// <summary>
         /// 必须MonoBehaviour 才有StartCoroutine() 协程方法
+        /// 
         /// </summary>
         /// <param name="enumerator"></param>
         /// <returns></returns>
@@ -167,11 +189,12 @@ namespace xum.action
 
         /// <summary>
         /// Debug 输出
+        /// 
         /// </summary>
-        /// <param name="log"></param>
-        public void DebugLog(string log)
+        /// <param name="msg"></param>
+        public void DebugLog(string msg)
         {
-            Debug.Log(log);
+            Debug.Log(msg);
         }
     }
 }

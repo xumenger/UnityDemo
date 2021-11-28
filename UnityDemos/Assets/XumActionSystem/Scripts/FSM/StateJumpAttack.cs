@@ -24,15 +24,18 @@ namespace xum.action
             animator.SetTrigger(AnimatorEnum.Anim_T_JumpAttack);
         }
 
+
         public override void OnUpdate()
         {
 
         }
 
+
         public override void OnEnd()
         {
 
         }
+
 
         public override void DoEvent(object param)
         {

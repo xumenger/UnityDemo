@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace xum.action
 {
-    /**
-     * Add in 2021-09-21
-     * 对于“用户输入系统”的封装
-     * 
-     */
+    /// <summary>
+    /// Add in 2021-09-21
+    /// 对于“用户输入系统”的封装
+    /// 
+    /// </summary>
     public class InputSystem
     {
         public InputSystem()
@@ -33,11 +33,13 @@ namespace xum.action
             return false;
         }
 
+        // 获取垂直方向移动值
         public virtual Vector3 GetVertical()
         {
             return Vector3.zero;
         }
 
+        // 获取水平方向移动值
         public virtual Vector3 GetHorizontal()
         {
             return Vector3.zero;

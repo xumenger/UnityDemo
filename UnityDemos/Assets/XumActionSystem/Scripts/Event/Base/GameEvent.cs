@@ -1,5 +1,9 @@
 namespace xum.action
 {
+    /// <summary>
+    /// 事件类
+    /// 
+    /// </summary>
     public abstract class GameEvent
     {
 

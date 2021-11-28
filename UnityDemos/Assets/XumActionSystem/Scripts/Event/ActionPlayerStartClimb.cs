@@ -16,6 +16,7 @@ namespace xum.action
             
         }
 
+
         /// <summary>
         /// 判断玩家开始攀爬事件后的处理
         /// 调用PlayerController 切换到攀爬状态

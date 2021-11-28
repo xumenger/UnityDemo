@@ -4,9 +4,10 @@ using UnityEngine;
 
 namespace xum.action
 {
-    /**
-     * 使用Blend Tree 将Idle、Walk、Run 等动作进行封装
-     */
+    /// <summary>
+    /// 使用Blend Tree 将Idle、Walk、Run 等动作进行封装
+    /// 
+    /// </summary>
     public class StateMove : FSMState
     {
         InputSystem inputSystem;

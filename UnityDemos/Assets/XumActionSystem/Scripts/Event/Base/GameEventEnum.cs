@@ -3,9 +3,10 @@ using System.Collections;
 
 namespace xum.action
 {
-    /**
-     * 游戏事件枚举
-     */
+    /// <summary>
+    /// 游戏事件枚举
+    /// 
+    /// </summary>
     public enum GameEventEnum
     {
         eNULL = -1,

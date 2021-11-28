@@ -4,9 +4,10 @@ using UnityEngine;
 
 namespace xum.action
 {
-    /**
-     * 动作状态枚举
-     */
+    /// <summary>
+    /// 动作状态枚举
+    /// 
+    /// </summary>
     public enum StateEnum
     {
         eNULL = -1,
@@ -28,9 +29,10 @@ namespace xum.action
     }
 
 
-    /**
-     * 在Animator 动画状态机中的变量
-     */
+    /// <summary>
+    /// 在Animator 动画状态机中的变量
+    /// 
+    /// </summary>
     public class AnimatorEnum
     {
         // Trigger，移动

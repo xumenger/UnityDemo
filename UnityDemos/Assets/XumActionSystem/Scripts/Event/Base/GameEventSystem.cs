@@ -4,24 +4,27 @@ using UnityEngine;
 
 namespace xum.action
 {
-    /**
-     * Add in 2021-09-21
-     * 游戏事件分发模块
-     * 
-     * 该脚本需要由开发者显式挂载到游戏场景中同名的游戏物体中
-     * 
-     * 常见的事件包括
-     * 1. 用户输入事件          => 触发玩家运动、攻击等
-     * 2. 敌人的攻击            => 触发玩家受伤
-     * 3. 玩家走到墙前面        => 触发玩家开始攀爬
-     * 4. 玩家走到水前          => 触发玩家开始游泳
-     * 5. 玩家走到齐腰矮墙前     => 触发玩家跳过矮墙
-     * 6. 
-     * 
-     */
+    /// <summary>
+    /// Add in 2021-09-21
+    /// 游戏事件分发模块
+    ///
+    /// 该脚本需要由开发者显式挂载到游戏场景中同名的游戏物体中
+    ///
+    /// 常见的事件包括比如
+    /// 1. 用户输入事件          => 触发玩家运动、攻击等
+    /// 2. 敌人的攻击            => 触发玩家受伤
+    /// 3. 玩家走到墙前面        => 触发玩家开始攀爬
+    /// 4. 玩家走到水前          => 触发玩家开始游泳
+    /// 5. 玩家走到齐腰矮墙前     => 触发玩家跳过矮墙
+    /// 6.
+    /// 
+    /// </summary>
     public abstract class GameEventSystem
     {
-        // eventDict 是所有GameEventSystem 子类共享的全局变量。不考虑多线程并发环境
+        /// <summary>
+        /// eventDict 是所有GameEventSystem 子类共享的全局变量。不考虑多线程并发环境
+        /// 
+        /// </summary>
         static private Dictionary<GameEventEnum, List<GameEventAction>> eventDict = new Dictionary<GameEventEnum, List<GameEventAction>>();
 
 
@@ -30,7 +33,7 @@ namespace xum.action
         /// 
         /// </summary>
         /// <param name="gameEvent"></param>
-        public void publicEvent(GameEvent gameEvent)
+        public void publishEvent(GameEvent gameEvent)
         {
             // 如果事件字典中没有这个事件，直接返回
             if (!eventDict.ContainsKey(gameEvent.getEventEnum()))
@@ -49,19 +52,20 @@ namespace xum.action
 
         /// <summary>
         /// 注册事件和事件处理类
+        /// 
         /// </summary>
         /// <param name="gameEvent"></param>
         /// <param name="eventAction"></param>
-        public void registerEventAction(GameEventEnum eventEnum, GameEventAction eventAction)
+        public void registerEventAction(GameEventAction eventAction)
         {
             List<GameEventAction> actionList = null;
 
-            if (!eventDict.ContainsKey(eventEnum))
+            if (!eventDict.ContainsKey(eventAction.getEventEnum()))
             {
-                eventDict.Add(eventEnum, new List<GameEventAction>());
+                eventDict.Add(eventAction.getEventEnum(), new List<GameEventAction>());
             }
 
-            actionList = eventDict[eventEnum];
+            actionList = eventDict[eventAction.getEventEnum()];
             actionList.Add(eventAction);
         }
     }

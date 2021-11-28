@@ -37,6 +37,7 @@ namespace xum.action
             fsmManager.StartCoroutine(WaitForAWhile(durationTime));
         }
 
+
         public override void OnUpdate()
         {
             // 角色控制器实现角色移动
@@ -44,10 +45,12 @@ namespace xum.action
             controller.Move(moveDirection * Time.deltaTime);
         }
 
+
         public override void OnEnd()
         {
 
         }
+
 
         public override void DoEvent(object param)
         {

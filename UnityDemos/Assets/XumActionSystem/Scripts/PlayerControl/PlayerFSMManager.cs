@@ -7,7 +7,15 @@ namespace xum.action
     public class PlayerFSMManager : FSMManager
     {
 
-        // 构造函数，初始进入eMove 状态
+        /// <summary>
+        /// 构造函数，初始进入eMove 状态
+        /// 
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="behaviour"></param>
+        /// <param name="controller"></param>
+        /// <param name="animator"></param>
+        /// <param name="inputSystem"></param>
         public PlayerFSMManager(GameObject gameObject,
                                 MonoBehaviour behaviour,
                                 CharacterController controller,
@@ -19,6 +27,10 @@ namespace xum.action
         }
 
 
+        /// <summary>
+        /// 初始化玩家角色所有涉及到的动作状态类
+        /// 
+        /// </summary>
         public override void InitAllFSMState()
         {
             StateMove stateMove = new StateMove(gameObject, animator, controller, this, inputSystem);

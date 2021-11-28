@@ -61,8 +61,7 @@ namespace xum.action
             this.controller = controller;
 
             // 注册对应的事件和处理类
-            ActionPlayerStartClimb actionPlayerStartClimb = new ActionPlayerStartClimb(GameEventEnum.eClimbCheck);
-            this.registerEventAction(GameEventEnum.eClimbCheck, actionPlayerStartClimb);
+            this.registerEventAction(new ActionPlayerStartClimb(GameEventEnum.eClimbCheck));
         }
 
 
@@ -90,7 +89,6 @@ namespace xum.action
                 animator.CrossFade("EnterClimb", 0.2f);
             }
 
-            
         }
 
 
@@ -216,6 +214,7 @@ namespace xum.action
             animator.SetIKRotation(AvatarIKGoal.RightHand, RightHandRot);
         }
 
+
         /// <summary>
         /// 
         /// </summary>
@@ -233,6 +232,7 @@ namespace xum.action
             Vector3 lerpTargetPos = Vector3.MoveTowards(gameObject.transform.position, targetPos, 0.2f);
             gameObject.transform.position = lerpTargetPos;
         }
+
 
         /// <summary>
         /// 

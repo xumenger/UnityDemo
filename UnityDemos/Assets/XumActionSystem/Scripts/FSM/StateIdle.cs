@@ -13,6 +13,7 @@ namespace xum.action
 
         }
 
+
         public override void OnStart()
         {
             // 播放“Idle”动画
@@ -20,15 +21,18 @@ namespace xum.action
 
         }
 
+
         public override void OnUpdate()
         {
 
         }
 
+
         public override void OnEnd()
         {
 
         }
+
 
         public override void DoEvent(object param)
         {
