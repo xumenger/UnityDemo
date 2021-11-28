@@ -23,25 +23,25 @@ namespace xum.action
             this.player = player;
         }
 
-        /// <summary>
-        /// 通过射线判断判断玩家是否走到墙边
-        /// </summary>
-        /// <returns></returns>
-        public override bool isHappened()
-        {
-            Vector3 origin = player.transform.position;
-            Vector3 dir = player.transform.forward;
+        ///// <summary>
+        ///// 通过射线判断判断玩家是否走到墙边
+        ///// </summary>
+        ///// <returns></returns>
+        //public override bool isHappened()
+        //{
+        //    Vector3 origin = player.transform.position;
+        //    Vector3 dir = player.transform.forward;
 
-            // 使用射线检测是否走到墙边，hit 表示射线命中墙的位置
-            RaycastHit hit;
-            Debug.DrawRay(origin, dir * wallRayLength, Color.yellow);
-            if (Physics.Raycast(origin, dir, out hit, wallRayLength))
-            {
-                return true;
-            }
+        //    // 使用射线检测是否走到墙边，hit 表示射线命中墙的位置
+        //    RaycastHit hit;
+        //    Debug.DrawRay(origin, dir * wallRayLength, Color.yellow);
+        //    if (Physics.Raycast(origin, dir, out hit, wallRayLength))
+        //    {
+        //        return true;
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
 
         /// <summary>

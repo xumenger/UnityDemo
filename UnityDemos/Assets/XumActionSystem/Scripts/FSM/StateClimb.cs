@@ -59,6 +59,10 @@ namespace xum.action
                           FSMManager fsmManager) : base(EChangeType.eTrigger, gameObject, animator, fsmManager)
         {
             this.controller = controller;
+
+            // 注册对应的事件和处理类
+            ActionPlayerStartClimb actionPlayerStartClimb = new ActionPlayerStartClimb(GameEventEnum.eClimbCheck);
+            this.registerEventAction(GameEventEnum.eClimbCheck, actionPlayerStartClimb);
         }
 
 

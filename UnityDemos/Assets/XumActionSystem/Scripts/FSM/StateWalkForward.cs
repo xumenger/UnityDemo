@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace xum.action
 {
-    public class FSMWalkForward : FSMState
+    public class StateWalkForward : FSMState
     {
-        public FSMWalkForward(GameObject gameObject,
+        public StateWalkForward(GameObject gameObject,
                               Animator animator,
                               FSMManager fsmManager) : base(EChangeType.eTrigger, gameObject, animator, fsmManager)
         {

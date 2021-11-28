@@ -11,8 +11,7 @@ namespace xum.action
     /// </summary>
     public class ActionPlayerStartClimb : GameEventAction
     {
-        public ActionPlayerStartClimb(GameEventSystem gameEventSystem,
-                                      GameEvent gameEvent) : base(gameEventSystem, gameEvent)
+        public ActionPlayerStartClimb(GameEventEnum eventEnum) : base(eventEnum)
         {
             
         }
@@ -20,8 +19,9 @@ namespace xum.action
         /// <summary>
         /// 判断玩家开始攀爬事件后的处理
         /// 调用PlayerController 切换到攀爬状态
+        /// 
         /// </summary>
-        public override void doAction()
+        public override void doAction(GameEvent gameEvent)
         {
             EventPlayerStartClimb eventPlayerStartClimb = (EventPlayerStartClimb)gameEvent;
 

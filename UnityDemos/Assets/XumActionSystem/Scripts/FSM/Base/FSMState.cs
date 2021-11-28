@@ -18,14 +18,19 @@ namespace xum.action
     }
 
 
-    public abstract class FSMState 
+    /// <summary>
+    /// FSMState 继承自GameEventSystem
+    /// 使得所有的状态子类都可以注册和发布事件
+    /// 
+    /// </summary>
+    public abstract class FSMState : GameEventSystem
     {
         protected EChangeType changeType;        // 动画控制、切换的方式
 
         protected bool canChange;                // 是否可以切换
         public bool CanChange => (canChange);
 
-        protected GameObject gameObject;           // 游戏对象
+        protected GameObject gameObject;         // 游戏对象
         protected Animator animator;             // 动画控制器
 
         protected FSMManager fsmManager;         // 有限状态管理

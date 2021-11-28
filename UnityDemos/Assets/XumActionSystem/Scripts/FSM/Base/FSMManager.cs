@@ -5,7 +5,13 @@ using UnityEngine;
 
 namespace xum.action
 {
-    public class FSMManager
+    /// <summary>
+    /// FSMManager 继承GameEventSystem
+    /// 可以注册事件处理类
+    /// 也可以发布事件触发处理类回调
+    /// 
+    /// </summary>
+    public class FSMManager : GameEventSystem
     {
         // 游戏物体的组件
         protected GameObject gameObject;
