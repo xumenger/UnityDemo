@@ -98,24 +98,24 @@ namespace xum.action
 
 
         /// <summary>
-        /// 当进入触发器
-        ///
         /// 需要为玩家增加CharacterController 组件
-        ///
         /// 使用触发器的性能怎么样？
+        ///
+        /// 发布如下事件：
+        /// 1. EventPlayerStartClimb
         /// 
         /// </summary>
         /// <param name="collider"></param>
         private void OnControllerColliderHit(ControllerColliderHit hit)
         {
-            Debug.LogWarning("hit: " + hit.collider.tag);
+            // Debug.LogWarning("hit: " + hit.collider.tag);
 
             // 不使用射线检测，而是替换为触发器触发攀爬事件
             if (hit.collider.tag == TagEnum.Tag_Wall)
             {
                 // 这里使用Layer 判断是否走到Wall 前面，也可以使用Tag
                 // 待优化点：
-                // 1. 不使用Layer，而是使用collider 的高度等熟悉判断，这样就不需要手动设置Layer 或Tag
+                // 1. 不使用Tag，而是使用collider 的高度等熟悉判断，这样就不需要手动设置Layer 或Tag
                 // 2. 需要增加判断玩家与Wall 的夹角，否则动作切换会不好
 
                 // 创建事件对象，保存此事件发生时候的上下文信息

@@ -2,13 +2,12 @@ using UnityEngine;
 
 namespace xum.action
 {
-    /**
-     * Add in 2021-09-21
-     * 敌人控制模块
-     * 
-     * 该脚本需要开发者显式挂载到敌人游戏物体上
-     * 
-     */
+    /// <summary>
+    /// Add in 2021-09-21
+    /// 敌人控制模块
+    /// 该脚本需要开发者显式挂载到敌人游戏物体上
+    /// 
+    /// </summary>
     public class EnemyAIController : MonoBehaviour
     {
         FSMManager fsmManager;
@@ -19,7 +18,9 @@ namespace xum.action
         Animator animator;
 
 
-        // Start is called before the first frame update
+        /// <summary>
+        /// Start is called before the first frame update
+        /// </summary>
         void Start()
         {
             // 获取基础的组件
@@ -35,7 +36,10 @@ namespace xum.action
         }
 
 
-        // Update is called once per frame
+        /// <summary>
+        /// Update is called once per frame
+        /// 
+        /// </summary>
         void Update()
         {
             if (inputSystem.IsJump())

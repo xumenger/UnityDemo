@@ -16,4 +16,5 @@ namespace xum.action
         // 武器：Weapon
         public static string Tag_Weapon = "Weapon";
     }
+
 }

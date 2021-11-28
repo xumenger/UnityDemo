@@ -18,6 +18,10 @@ namespace xum.action
         }
 
 
+        /// <summary>
+        /// 初始化敌人的所有状态
+        /// 
+        /// </summary>
         public override void InitAllFSMState()
         {
             StateMove stateMove = new StateMove(gameObject, animator, controller, this, inputSystem);

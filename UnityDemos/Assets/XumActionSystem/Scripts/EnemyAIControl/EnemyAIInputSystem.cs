@@ -5,11 +5,11 @@ using UnityEngine;
 namespace xum.action
 {
 
-    /**
-     * Add in 2021-09-21
-     * 敌人AI输入模块
-     * 
-     */
+    /// <summary>
+    /// Add in 2021-09-21
+    /// 敌人AI输入模块
+    /// 
+    /// </summary>
     public class EnemyAIInputSystem : InputSystem
     {
         private bool isMove = false;
@@ -20,7 +20,11 @@ namespace xum.action
         }
 
 
-        // 判断是否运动
+        /// <summary>
+        /// 判断是否运动
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override bool IsMove()
         {
             if (!isMove)
@@ -32,13 +36,23 @@ namespace xum.action
             return false;
         }
 
-        // 判断向前
+
+        /// <summary>
+        /// 判断向前
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override Vector3 GetVertical()
         {
             return new Vector3(0.8f, 0f, 0f);
         }
 
-        // 判断向右
+
+        /// <summary>
+        /// 判断向右
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public override Vector3 GetHorizontal()
         {
             return Vector3.zero;
