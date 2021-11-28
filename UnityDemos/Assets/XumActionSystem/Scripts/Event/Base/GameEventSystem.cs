@@ -45,7 +45,10 @@ namespace xum.action
             HashSet<GameEventAction> actionSet = eventDict[gameEvent.getEventEnum()];
             foreach (GameEventAction eventAction in actionSet)
             {
-                eventAction.doAction(gameEvent);
+                if(!eventAction.getDisable())
+                {
+                    eventAction.doAction(gameEvent);
+                }
             }
         }
 
@@ -66,17 +69,29 @@ namespace xum.action
             }
 
             actionSet = eventDict[eventAction.getEventEnum()];
-            actionSet.Add(eventAction);
+
+            if (!actionSet.Contains(eventAction))
+            {
+                actionSet.Add(eventAction);
+            }
+
+            // 设置其为可用状态
+            eventAction.setDisable(false);
         }
 
 
         /// <summary>
         /// 移除事件
+        ///
+        /// 为GameEventAction 增加isDisable 属性
+        /// 而不是将其从HashSet 中Remove
+        /// 是因为可能在publishEvent() 的时候触发这个disableEventAction() 方法的调用
+        /// 那么就会在foreach 的时候执行Remove() 导致运行时报错
         /// 
         /// </summary>
         /// <param name="eventAction"></param>
         /// <returns></returns>
-        public bool removeEventAction(GameEventAction eventAction)
+        public bool disableEventAction(GameEventAction eventAction)
         {
             HashSet<GameEventAction> actionSet = null;
 
@@ -86,8 +101,12 @@ namespace xum.action
             }
 
             actionSet = eventDict[eventAction.getEventEnum()];
-            actionSet.Remove(eventAction);
+            if (!actionSet.Contains(eventAction))
+            {
+                return false;
+            }
 
+            eventAction.setDisable(true);
             return true;
         }
     }

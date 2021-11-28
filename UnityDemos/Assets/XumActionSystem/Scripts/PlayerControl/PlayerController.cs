@@ -100,18 +100,18 @@ namespace xum.action
         /// <summary>
         /// 当进入触发器
         ///
-        /// 需要为玩家增加Capsule Collider 并且勾选Is Trigger
-        /// 还需要为玩家添加RigidBody 或者CharacterController，否则触发器也不生效
-        /// 我们的场景选择CharacterController
+        /// 需要为玩家增加CharacterController 组件
         ///
         /// 使用触发器的性能怎么样？
         /// 
         /// </summary>
         /// <param name="collider"></param>
-        private void OnTriggerEnter(Collider collider)
+        private void OnControllerColliderHit(ControllerColliderHit hit)
         {
+            Debug.LogWarning("hit: " + hit.collider.tag);
+
             // 不使用射线检测，而是替换为触发器触发攀爬事件
-            if (collider.tag == TagEnum.Tag_Wall)
+            if (hit.collider.tag == TagEnum.Tag_Wall)
             {
                 // 这里使用Layer 判断是否走到Wall 前面，也可以使用Tag
                 // 待优化点：
@@ -128,28 +128,6 @@ namespace xum.action
             ///////////////////////////////////////////////////////
             ///
             // 其他事件检查
-
-        }
-
-
-        /// <summary>
-        /// 当退出触发器
-        /// 
-        /// </summary>
-        /// <param name="collider"></param>
-        private void OnTriggerExit(Collider collider)
-        {
-
-        }
-
-
-        /// <summary>
-        /// 当逗留触发器
-        /// 
-        /// </summary>
-        /// <param name="collider"></param>
-        private void OnTriggerStay(Collider collider)
-        {
 
         }
 

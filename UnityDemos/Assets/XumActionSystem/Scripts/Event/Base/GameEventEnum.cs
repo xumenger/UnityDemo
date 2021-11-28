@@ -11,7 +11,7 @@ namespace xum.action
     {
         eNULL = -1,
 
-        eClimbCheck,              // 玩家可以攀爬
+        eStartClimb,              // 玩家可以攀爬
 
         eSize,
     }

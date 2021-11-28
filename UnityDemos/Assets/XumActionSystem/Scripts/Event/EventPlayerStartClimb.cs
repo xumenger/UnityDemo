@@ -31,7 +31,7 @@ namespace xum.action
         /// <returns></returns>
         public override GameEventEnum getEventEnum()
         {
-            return GameEventEnum.eClimbCheck;
+            return GameEventEnum.eStartClimb;
         }
 
 

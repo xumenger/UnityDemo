@@ -47,7 +47,7 @@ namespace xum.action
         private CharacterController controller;
 
         // 可以进行攀爬事件处理类
-        private ActionPlayerStartClimb actionPlayerStartClimb = new ActionPlayerStartClimb(GameEventEnum.eClimbCheck);
+        private ActionPlayerStartClimb actionPlayerStartClimb = new ActionPlayerStartClimb(GameEventEnum.eStartClimb);
 
         public Transform climbHelper;
         private Vector3 headPos;
@@ -77,7 +77,7 @@ namespace xum.action
         public override void OnStart()
         {
             // 先移除攀爬事件处理类
-            this.removeEventAction(this.actionPlayerStartClimb);
+            this.disableEventAction(this.actionPlayerStartClimb);
 
             // 检查爬墙状态
             Vector3 origin = gameObject.transform.position;
