@@ -24,8 +24,13 @@ namespace xum.action
         /// </summary>
         public override void doAction(GameEvent gameEvent)
         {
+            // 开始攀爬事件类型转换
             EventPlayerStartClimb eventPlayerStartClimb = (EventPlayerStartClimb)gameEvent;
 
+            // 调整玩家朝向，朝向障碍物。设置与障碍物的表面的法向量相反即可
+            eventPlayerStartClimb.getPlayer().transform.forward = -eventPlayerStartClimb.getHitNormal();
+
+            // 切换到攀爬动作
             eventPlayerStartClimb.getPlayerController().ChangeToState(StateEnum.eClimb);
         }
     }

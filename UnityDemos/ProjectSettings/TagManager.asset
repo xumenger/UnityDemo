@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Ground
   - Breakable
+  - Wall
+  - Weapon
   layers:
   - Default
   - TransparentFX

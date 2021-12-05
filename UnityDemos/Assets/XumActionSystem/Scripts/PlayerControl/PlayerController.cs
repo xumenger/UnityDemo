@@ -15,8 +15,9 @@ namespace xum.action
         FSMManager fsmManager;
         InputSystem inputSystem;
 
-        // 游戏物体的组件
+        // 角色控制器
         CharacterController controller;
+        // 动画状态机
         Animator animator;
 
         Camera camera;
@@ -118,11 +119,19 @@ namespace xum.action
                 // 1. 不使用Tag，而是使用collider 的高度等熟悉判断，这样就不需要手动设置Layer 或Tag
                 // 2. 需要增加判断玩家与Wall 的夹角，否则动作切换会不好
 
-                // 创建事件对象，保存此事件发生时候的上下文信息
-                EventPlayerStartClimb eventPlayerStartClimb = new EventPlayerStartClimb(gameObject);
+                // 计算玩家面向的方向与墙的法线的反方向的夹角的余弦值
+                float cosAngle = Vector3.Dot(transform.forward.normalized, -hit.normal.normalized);
 
-                // 发布事件，回调攀爬事件对应的处理类
-                fsmManager.publishEvent(eventPlayerStartClimb);
+                // 大于0.866，说明两者的夹角小于30，这个时候是玩家相对面向墙的角度，切换成攀爬比较合理
+                // 不加上这个夹角判断，可能出现玩家与墙平行站位的时候，也切换到爬墙，不符合常识
+                if (cosAngle > 0)
+                {
+                    // 创建事件对象，保存此事件发生时候的上下文信息
+                    EventPlayerStartClimb eventPlayerStartClimb = new EventPlayerStartClimb(gameObject, hit.gameObject, hit.normal);
+
+                    // 发布事件，回调攀爬事件对应的处理类
+                    fsmManager.publishEvent(eventPlayerStartClimb);
+                }
             }
 
             ///////////////////////////////////////////////////////
