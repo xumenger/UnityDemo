@@ -124,7 +124,7 @@ namespace xum.action
 
                 // 大于0.866，说明两者的夹角小于30，这个时候是玩家相对面向墙的角度，切换成攀爬比较合理
                 // 不加上这个夹角判断，可能出现玩家与墙平行站位的时候，也切换到爬墙，不符合常识
-                if (cosAngle > 0)
+                if (cosAngle > 0.866)
                 {
                     // 创建事件对象，保存此事件发生时候的上下文信息
                     EventPlayerStartClimb eventPlayerStartClimb = new EventPlayerStartClimb(gameObject, hit.gameObject, hit.normal);
