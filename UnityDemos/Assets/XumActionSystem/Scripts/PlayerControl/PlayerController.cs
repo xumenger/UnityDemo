@@ -15,7 +15,7 @@ namespace xum.action
         FSMManager fsmManager;
         InputSystem inputSystem;
 
-        // 角色控制器
+        // 角色控制器（还有一个点，角色控制器它也是一个碰撞体！）
         CharacterController controller;
         // 动画状态机
         Animator animator;

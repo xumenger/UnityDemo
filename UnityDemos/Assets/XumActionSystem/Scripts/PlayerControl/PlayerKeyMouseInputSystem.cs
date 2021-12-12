@@ -62,7 +62,7 @@ namespace xum.action
             float speed = 1.0f;
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                speed = 3.0f;
+                speed = 4.0f;
             }
 
             return speed;

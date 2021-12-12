@@ -68,9 +68,11 @@ namespace xum.action
             animator.SetFloat(AnimatorEnum.Anim_F_MoveRight, InputX.magnitude);
 
             // 设置Controller 移动
-            // 使用Move 可能出现走向楼梯后然后就飘在空中的情况，不使用Move
+            // 使用Move() 可能出现走向楼梯后然后就飘在空中的情况，不使用Move() ！！！！
             // controller.Move(desiredMoveDirection * Time.deltaTime);
-            // 使用SimpleMove 可以解决这个问题，SimpleMove 自带重力
+
+            // 使用SimpleMove() 可以解决这个问题，SimpleMove() 自带重力，注意SimpleMove() 和Move)_ 的函数签名并不一致！
+            // SimpleMove() 以秒为单位的。不用乘时间
             controller.SimpleMove(desiredMoveDirection);
 
             // 通过鼠标控制角色旋转
