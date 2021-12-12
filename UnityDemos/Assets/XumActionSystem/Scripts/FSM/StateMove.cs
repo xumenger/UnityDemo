@@ -63,12 +63,15 @@ namespace xum.action
 
             desiredMoveDirection *= speed;
 
-            // 更新Animator 动画参数
+            // 更新Animator 动画参数。magnitude：向量的值
             animator.SetFloat(AnimatorEnum.Anim_F_MoveForward, InputZ.magnitude);
             animator.SetFloat(AnimatorEnum.Anim_F_MoveRight, InputX.magnitude);
 
             // 设置Controller 移动
-            controller.Move(desiredMoveDirection * Time.deltaTime);
+            // 使用Move 可能出现走向楼梯后然后就飘在空中的情况，不使用Move
+            // controller.Move(desiredMoveDirection * Time.deltaTime);
+            // 使用SimpleMove 可以解决这个问题，SimpleMove 自带重力
+            controller.SimpleMove(desiredMoveDirection);
 
             // 通过鼠标控制角色旋转
             gameObject.transform.rotation = Quaternion.Slerp(gameObject.transform.rotation, Quaternion.LookRotation(desiredMoveDirection), desiredRotationSpeed);
